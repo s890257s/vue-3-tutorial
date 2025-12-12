@@ -1,3 +1,11 @@
+# <a id="VSCode插件"></a> 上課使用的 VS Code 插件
+
+1. **Markdown Preview Enhanced**：提供 Markdown 文件的預覽功能，方便查看格式化後的內容。
+2.  **Live Server**：提供本地開發伺服器，具備即時重新整理功能。
+3.  **Prettier - Code formatter**：程式碼格式化工具，保持程式碼風格一致。
+
+---
+
 # 章節 1 ｜ ES6 必備基礎
 
 ## <a id="目錄"></a>目錄
@@ -22,7 +30,10 @@
   - [7. slice (切片)](#CH1-5-7)
   - [8. reduce (累加/歸納)](#CH1-5-8)
 - [1-6 非同步處理（Promise / async / await）](#CH1-6)
-  - [async / await (建議使用)](#CH1-6-1)
+  - [1. 非同步概念 (Asynchronous)](#CH1-6-1)
+  - [2. Callback Hell (回呼地獄)](#CH1-6-2)
+  - [3. Promise (承諾)](#CH1-6-3)
+  - [4. async / await (建議使用)](#CH1-6-4)
 - [1-7 模組化 (Export & Import)](#CH1-7)
   - [1. 匯出 (Export)](#CH1-7-1)
   - [2. 匯入 (Import)](#CH1-7-2)
@@ -301,12 +312,58 @@ const sum = numbers.reduce((acc, curr) => {
 
 現代網頁應用程式常需與後端 API 進行資料交換，此過程屬於非同步操作。
 
-### <a id="CH1-6-1"></a>[async / await (建議使用)](#目錄)
+### <a id="CH1-6-1"></a>[1. 非同步概念 (Asynchronous)](#目錄)
 
-`async / await` 是 Promise 的語法糖，能以更接近同步程式碼的方式撰寫非同步邏輯，提高程式碼可讀性。
+JavaScript 是單執行緒 (Single Thread) 的語言，一次只能做一件事。
+- **同步 (Synchronous)**：程式碼依序執行，若遇到耗時任務（如請求後端資料）會導致整個網頁「卡住」等待，使用者體驗極差。
+- **非同步 (Asynchronous)**：將耗時任務交給瀏覽器在背景處理，程式繼續往下執行。待任務完成後，再透過回呼機制處理結果。
+
+### <a id="CH1-6-2"></a>[2. Callback Hell (回呼地獄)](#目錄)
+
+早期處理非同步主要依賴 **Callback (回呼函式)**。當有多個任務需依序執行時，會產生深層巢狀結構，導致程式碼難以維護與除錯。
+
+```javascript
+// 典型的 Callback Hell (波動拳)
+doA(function(resultA) {
+  doB(resultA, function(resultB) {
+    doC(resultB, function(resultC) {
+      console.log("終於完成: " + resultC);
+    });
+  });
+});
+```
+
+### <a id="CH1-6-3"></a>[3. Promise (承諾)](#目錄)
+
+ES6 引入 `Promise` 物件來優化非同步操作。它代表一個「未來才會知道結果」的事件，具備三種狀態：
+1. **Pending (擱置中)**：初始狀態。
+2. **Fulfilled (已實現)**：操作成功，呼叫 `resolve`。
+3. **Rejected (已拒絕)**：操作失敗，呼叫 `reject`。
+
+它採用鏈式調用 (.then) 解決了巢狀縮排的問題。
+
+```javascript
+const myPromise = (score) => {
+  return new Promise((resolve, reject) => {
+    if (score >= 60) {
+      resolve("及格！");
+    } else {
+      reject("不及格...");
+    }
+  });
+};
+
+myPromise(80)
+  .then((msg) => console.log(msg))  // 成功時執行
+  .catch((err) => console.error(err)); // 失敗時執行
+```
+
+### <a id="CH1-6-4"></a>[4. async / await (建議使用)](#目錄)
+
+`async / await` 是 Promise 的語法糖，能以更接近同步程式碼的方式撰寫非同步邏輯，大幅提高可讀性。
 
 **錯誤處理 (Error Handling)：**
-在使用 `async / await` 時，建議搭配 `try...catch` 區塊來捕捉可能發生的錯誤（例如網路斷線、伺服器錯誤）。
+建議搭配 `try...catch` 區塊來捕捉錯誤。
 
 ```javascript
 const getData = async () => {
