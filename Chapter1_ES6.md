@@ -111,22 +111,22 @@ const addSimple = (a, b) => a + b;
 
 > **進階觀念**：
 > 箭頭函式沒有自己的 `this`，它會繼承外層作用域的 `this`。這在 Vue 的選項式 API (Options API) 中可能會導致問題，但在 Vue 3 組合式 API (Composition API) 中，由於我們主要在 `setup` 函式內工作，`this` 的使用頻率已大幅降低，箭頭函式反而更為適用。
-
-```javascript
-// 箭頭函式沒有自己的 this，會使用外部的 this
-const person = {
-  name: "Alice",
-  sayHi: function () {
-    console.log("Hi, I am", this);
-  },
-
-  sayHiByArrow: () => {
-    console.log("Hi, I am", this);
-  },
-};
-person.sayHi(); // 印出 person 物件
-person.sayHiByArrow(); // 印出 window 物件
-```
+>
+> ```javascript
+> // 箭頭函式沒有自己的 this，會使用外部的 this
+> const person = {
+>   name: "Alice",
+>   sayHi: function () {
+>     console.log("Hi, I am", this);
+>   },
+>
+>   sayHiByArrow: () => {
+>     console.log("Hi, I am", this);
+>   },
+> };
+> person.sayHi(); // 印出 person 物件
+> person.sayHiByArrow(); // 印出 window 物件
+> ```
 
 ---
 
