@@ -17,8 +17,8 @@
   - [2. reactive](#CH2-3-2)
   - [3. 比較 ref 與 reactive](#CH2-3-3)
 - [2-4 v-bind 與 v-on 指令](#CH2-4)
-  - [1. v-bind (縮寫 :)](#CH2-4-1)
-  - [2. v-on (縮寫 @)](#CH2-4-2)
+  - [1. v-bind ( 縮寫 : )](#CH2-4-1)
+  - [2. v-on ( 縮寫 @ )](#CH2-4-2)
 - [2-5 v-model 雙向綁定](#CH2-5)
   - [1. 基本概念](#CH2-5-1)
   - [2. 表單元素應用](#CH2-5-2)
@@ -635,6 +635,109 @@ Vue 在處理列表更新時，為了效能考量，預設採用「就地更新�
 ```
 
 > **注意：** 請盡量避免使用 `index` (陣列索引) 作為 `key`，因為當資料插入或刪除時，索引值會改變，導致 Vue 對應錯誤，失去使用 key 的意義。
+
+**範例：為什麼 key 很重要？ (List Insertion + Input)**
+
+想像一下，你有一列表單輸入框。如果我們在列表的**最前面**新增一筆資料，但使用 `index` 當作 key...
+
+1.  **問題**：Vue 看到 `key` (索引 0) 還是索引 0，就認為該 DOM 元素還是同一個，於是它保留了 DOM 狀態 (輸入框裡的字)，只把文字內容換成新資料。
+2.  **後果**：你原本填寫給 "Alice" 的備註，結果跑到新的人 "New User" 頭上了！因為 DOM 元素留在原處，沒有跟著資料往下移。
+
+試著操作下方的範例：
+
+1. 在兩個列表的 "Alice" 旁邊輸入一些備註。
+2. 按下 "新增使用者" 按鈕。
+3. 觀察 **Bad** 列表的輸入框停留在第一格（錯），而 **Good** 列表的輸入框會跟著 "Alice" 往下移動（對）。
+
+```html
+<style>
+  .comparison {
+    font-family: monospace;
+    display: flex;
+    gap: 20px;
+    width: 50dvw;
+  }
+  .list-box {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    flex: 1;
+  }
+  .item-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.5rem;
+  }
+  .item-row span {
+    flex: 1;
+  }
+  .item-row input {
+    flex: 5;
+    padding: 4px;
+  }
+  button {
+    margin: 2px;
+  }
+</style>
+
+<div id="app-key-demo">
+  <button @click="addItem">新增使用者</button>
+
+  <div class="comparison">
+    <div class="list-box">
+      <h3>錯誤示範 (Key = Index)</h3>
+      <div v-for="(item, index) in items" :key="index" class="item-row">
+        <span>{{ item.name }}</span> <input placeholder="" />
+      </div>
+    </div>
+
+    <div class="list-box">
+      <h3>正確示範 (Key = ID)</h3>
+      <div v-for="item in items" :key="item.id" class="item-row">
+        <span>{{ item.name }}</span> <input placeholder="" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import {
+    createApp,
+    ref,
+  } from "https://cdnjs.cloudflare.com/ajax/libs/vue/3.5.22/vue.esm-browser.prod.min.js";
+
+  createApp({
+    setup() {
+      const items = ref([
+        { id: "A1", name: "Alice" },
+        { id: "A2", name: "David" },
+        { id: "A3", name: "Maria" },
+      ]);
+
+      let nextId = 4;
+      const addItem = () => {
+        items.value.unshift({
+          id: "A" + nextId++,
+          name: `Kevin`,
+        });
+      };
+
+      return { items, addItem };
+    },
+  }).mount("#app-key-demo");
+</script>
+```
+
+<div style="display: flex; justify-content: center;">
+  <img src="./imgs/index-key.webp" width="90%" style="border-radius: 10px;">
+</div>
+<p align="center"><strong style="font-size:20px;">【使用 index 作為 key】</strong></p>
+
+<div style="display: flex; justify-content: center;">
+  <img src="./imgs/id-key.webp" width="90%" style="border-radius: 10px;">
+</div>
+<p align="center"><strong style="font-size:20px;">【使用 id 作為 key】</strong></p>
 
 ### <a id="CH2-7-5"></a>[5. v-for 與 v-if](#目錄)
 
