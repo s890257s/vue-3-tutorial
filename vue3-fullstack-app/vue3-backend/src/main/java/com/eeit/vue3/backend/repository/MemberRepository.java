@@ -1,10 +1,10 @@
-package tw.com.eeit.shop.repository;
+package com.eeit.vue3.backend.repository;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import tw.com.eeit.shop.model.entity.Member;
+import com.eeit.vue3.backend.model.entity.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Integer> {
 

@@ -1,4 +1,4 @@
-package tw.com.eeit.shop.config.exception;
+package com.eeit.vue3.backend.config_full.exception;
 
 public class IncorrectAccountOrPasswordException extends RuntimeException {
 

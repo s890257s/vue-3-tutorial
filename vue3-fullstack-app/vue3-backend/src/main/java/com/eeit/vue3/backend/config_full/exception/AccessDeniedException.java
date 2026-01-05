@@ -1,6 +1,6 @@
-package tw.com.eeit.shop.config.exception;
+package com.eeit.vue3.backend.config_full.exception;
 
-public class AccessDeniedException extends RuntimeException{
+public class AccessDeniedException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 

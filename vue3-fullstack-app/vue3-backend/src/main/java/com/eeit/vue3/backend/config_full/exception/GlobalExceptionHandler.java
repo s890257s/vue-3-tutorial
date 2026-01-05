@@ -1,4 +1,4 @@
-package tw.com.eeit.shop.config.exception;
+package com.eeit.vue3.backend.config_full.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
