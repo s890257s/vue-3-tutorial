@@ -1,8 +1,7 @@
-package tw.com.eeit.shop.config.security;
+package com.eeit.vue3.backend.config_full.security;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,15 +15,16 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import lombok.extern.slf4j.Slf4j;
 
+import lombok.RequiredArgsConstructor;
+
 @Configuration
 @EnableWebSecurity
 @Slf4j
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-	@Autowired
-	private JwtAuthenticationFilter jwtAuthenticationFilter;
-	@Autowired
-	private HandlerExceptionResolver handlerExceptionResolver;
+	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final HandlerExceptionResolver handlerExceptionResolver;
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

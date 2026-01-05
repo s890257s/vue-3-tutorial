@@ -2,7 +2,6 @@ package com.eeit.vue3.backend.service;
 
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -12,14 +11,15 @@ import com.eeit.vue3.backend.model.entity.Member;
 import com.eeit.vue3.backend.model.mapper.MemberMapper;
 import com.eeit.vue3.backend.repository.MemberRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
-	@Autowired
-	private MemberRepository memberRepository;
+	private final MemberRepository memberRepository;
 
-	@Autowired
-	private MemberMapper memberMapper;
+	private final MemberMapper memberMapper;
 
 	/**
 	 * 根據 ID 查找登入使用者資訊

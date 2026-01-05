@@ -2,7 +2,6 @@ package com.eeit.vue3.backend.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -14,12 +13,14 @@ import com.eeit.vue3.backend.model.dto.ProductDto;
 import com.eeit.vue3.backend.model.dto.ProductQuery;
 import com.eeit.vue3.backend.service.ProductService;
 
+import lombok.RequiredArgsConstructor;
+
 @RestController
 @RequestMapping("/api/product")
+@RequiredArgsConstructor
 public class ProductController {
 
-	@Autowired
-	private ProductService productService;
+	private final ProductService productService;
 
 	@GetMapping("/all")
 	public List<ProductDto> getAll() {

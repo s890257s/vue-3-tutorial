@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -20,14 +20,15 @@ import com.eeit.vue3.backend.model.entity.Product;
 import com.eeit.vue3.backend.model.mapper.ProductMapper;
 import com.eeit.vue3.backend.repository.ProductRepository;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ProductService {
 
-	@Autowired
-	private ProductMapper productMapper;
+	private final ProductMapper productMapper;
 
-	@Autowired
-	private ProductRepository productRepository;
+	private final ProductRepository productRepository;
 
 	public List<ProductDto> getAll() {
 		return productRepository.findAll().stream()

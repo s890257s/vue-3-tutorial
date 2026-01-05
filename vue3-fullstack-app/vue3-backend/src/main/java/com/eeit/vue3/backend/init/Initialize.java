@@ -5,27 +5,27 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ResourceUtils;
 
-import tw.com.eeit.shop.model.entity.Member;
-import tw.com.eeit.shop.model.entity.Product;
-import tw.com.eeit.shop.repository.MemberRepository;
-import tw.com.eeit.shop.repository.ProductRepository;
-import tw.com.eeit.shop.utils.CommonUtil;
+import com.eeit.vue3.backend.model.entity.Member;
+import com.eeit.vue3.backend.model.entity.Product;
+import com.eeit.vue3.backend.repository.MemberRepository;
+import com.eeit.vue3.backend.repository.ProductRepository;
+import com.eeit.vue3.backend.utils.CommonUtil;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
+@RequiredArgsConstructor
 public class Initialize implements ApplicationListener<ContextRefreshedEvent> {
 
-	@Autowired
-	private MemberRepository memberRepository;
+	private final MemberRepository memberRepository;
 
-	@Autowired
-	private ProductRepository productRepository;
+	private final ProductRepository productRepository;
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
