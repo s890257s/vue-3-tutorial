@@ -10,7 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
-import com.eeit.vue3.backend.model.dto.LoggedInMember;
+import com.eeit.vue3.backend.model.dto.LoginResponse;
 import com.eeit.vue3.backend.service.AuthService;
 import com.eeit.vue3.backend.utils.JwtUtil;
 
@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		// 讀取 member 資料
 		String memberId = jwtUtil.getSubject(jwtToken);
-		LoggedInMember loggedInMember = authService.getMemberById(memberId);
+		LoginResponse loggedInMember = authService.getMemberById(memberId);
 
 		// 若管理員則給予管理員權限
 		Set<SimpleGrantedAuthority> auths = new HashSet<>();

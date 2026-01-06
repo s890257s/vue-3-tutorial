@@ -3,15 +3,15 @@ package com.eeit.vue3.backend.model.mapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
-import com.eeit.vue3.backend.model.dto.ProductDto;
+import com.eeit.vue3.backend.model.dto.ProductResponse;
 import com.eeit.vue3.backend.model.entity.Product;
 import com.eeit.vue3.backend.utils.CommonUtil;
 
 @Component
 public class ProductMapper {
 
-	public ProductDto toDto(Product entity) {
-		ProductDto dto = new ProductDto();
+	public ProductResponse toDto(Product entity) {
+		ProductResponse dto = new ProductResponse();
 		BeanUtils.copyProperties(entity, dto);
 
 		dto.setId(entity.getProductId());

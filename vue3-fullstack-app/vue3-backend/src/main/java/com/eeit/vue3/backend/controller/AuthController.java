@@ -6,8 +6,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eeit.vue3.backend.model.dto.EmailAndPassword;
-import com.eeit.vue3.backend.model.dto.LoggedInMember;
+import jakarta.validation.Valid;
+
+import com.eeit.vue3.backend.model.dto.LoginResponse;
+import com.eeit.vue3.backend.model.dto.LoginRequest;
 import com.eeit.vue3.backend.service.AuthService;
 
 @RestController
@@ -21,12 +23,12 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<LoggedInMember> login(@RequestBody EmailAndPassword emailAndPasswordDto) {
+	public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
 
-		LoggedInMember loggedInMemberDto = authService.login(emailAndPasswordDto);
+		LoginResponse loginResponse = authService.login(loginRequest);
 
-		return ResponseEntity.ok().header("Authorization", "Bearer " + loggedInMemberDto.getToken())
-				.body(loggedInMemberDto);
+		return ResponseEntity.ok().header("Authorization", "Bearer " + loginResponse.getToken())
+				.body(loginResponse);
 	}
 
 }

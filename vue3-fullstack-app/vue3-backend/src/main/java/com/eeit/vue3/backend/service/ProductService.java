@@ -14,7 +14,7 @@ import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.persistence.criteria.Predicate;
 
 import com.eeit.vue3.backend.model.dto.PageQuery;
-import com.eeit.vue3.backend.model.dto.ProductDto;
+import com.eeit.vue3.backend.model.dto.ProductResponse;
 import com.eeit.vue3.backend.model.dto.ProductQuery;
 import com.eeit.vue3.backend.model.entity.Product;
 import com.eeit.vue3.backend.model.mapper.ProductMapper;
@@ -30,7 +30,7 @@ public class ProductService {
 
 	private final ProductRepository productRepository;
 
-	public List<ProductDto> getAll() {
+	public List<ProductResponse> getAll() {
 		return productRepository.findAll().stream()
 				.map(productMapper::toDto)
 				.toList();
@@ -39,7 +39,7 @@ public class ProductService {
 	/**
 	 * 根據傳入參數，動態增刪欄位查詢 Product 表格
 	 */
-	public List<ProductDto> getByQuery(ProductQuery productQuery) {
+	public List<ProductResponse> getByQuery(ProductQuery productQuery) {
 
 		Specification<Product> spce = (root, query, cb) -> {
 			List<Predicate> predicates = new ArrayList<>();
@@ -74,7 +74,7 @@ public class ProductService {
 		return productRepository.findAll(spce).stream().map(productMapper::toDto).toList();
 	}
 
-	public Page<ProductDto> getByPaginated(PageQuery dto) {
+	public Page<ProductResponse> getByPaginated(PageQuery dto) {
 
 		/**
 		 * 建立分頁物件，依參數順序: </br>
@@ -87,7 +87,7 @@ public class ProductService {
 
 		Page<Product> pageProducts = productRepository.findAll(pageRequest);
 
-		Page<ProductDto> pageProductDtos = pageProducts.map(post -> productMapper.toDto(post));
+		Page<ProductResponse> pageProductDtos = pageProducts.map(post -> productMapper.toDto(post));
 
 		return pageProductDtos;
 

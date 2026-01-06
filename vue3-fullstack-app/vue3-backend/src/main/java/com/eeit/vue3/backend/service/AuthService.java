@@ -1,15 +1,15 @@
 package com.eeit.vue3.backend.service;
 
-import java.util.Objects;
-
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.eeit.vue3.backend.model.dto.EmailAndPassword;
-import com.eeit.vue3.backend.model.dto.LoggedInMember;
+import com.eeit.vue3.backend.model.dto.LoginResponse;
+import com.eeit.vue3.backend.model.dto.LoginRequest;
 import com.eeit.vue3.backend.model.entity.Member;
 import com.eeit.vue3.backend.model.mapper.MemberMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.eeit.vue3.backend.repository.MemberRepository;
+import com.eeit.vue3.backend.utils.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,53 +21,63 @@ public class AuthService {
 
 	private final MemberMapper memberMapper;
 
+	private final PasswordEncoder passwordEncoder;
+
+	private final JwtUtil jwtUtil;
+
 	/**
 	 * 根據 ID 查找登入使用者資訊
 	 */
-	public LoggedInMember getMemberById(Integer id) {
+	public LoginResponse getMemberById(Integer id) {
 		Member member = memberRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("找不到使用者 id: " + id));
-		LoggedInMember loggedInMember = memberMapper.memberToLoggedInMember(member);
-		return loggedInMember;
+		LoginResponse loginResponse = memberMapper.memberToLoginResponse(member);
+		return loginResponse;
 	}
 
 	/**
 	 * 根據 ID 查找登入使用者資訊，多載方法，讓呼叫者無須自己實作轉型
 	 */
-	public LoggedInMember getMemberById(String id) {
+	public LoginResponse getMemberById(String id) {
 		return getMemberById(Integer.parseInt(id));
 	}
 
 	/**
 	 * 取得當前登入的使用者
 	 */
-	public LoggedInMember getLoggedInMember() {
+	public LoginResponse getLoggedInMember() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 		if (principal == null) {
 			throw new RuntimeException("使用者尚未登入");
 		}
 
-		LoggedInMember loggedInMember = (LoggedInMember) principal;
+		LoginResponse loginResponse = (LoginResponse) principal;
 
-		return loggedInMember;
+		return loginResponse;
 	}
 
-	public LoggedInMember login(EmailAndPassword ep) {
+	public LoginResponse login(LoginRequest loginRequest) {
+		String unifiedErrorMsg = "帳號或密碼錯誤";
 
-		// 找不到 member 表示帳號(email) 打錯
-		Member member = memberRepository.findByEmail(ep.getEmail())
-				.orElseThrow(() -> new RuntimeException("找不到使用者 email: " + ep.getEmail()));
+		Member member = memberRepository.findByEmail(loginRequest.getEmail())
+				.orElseThrow(() -> new RuntimeException(unifiedErrorMsg));
 
-		// 密碼不符合
-		boolean incorrectPassword = !Objects.equals(ep.getPassword(), member.getPassword());
+		boolean incorrectPassword = !passwordEncoder.matches(loginRequest.getPassword(), member.getPassword());
 
 		if (incorrectPassword) {
-			throw new RuntimeException("密碼錯誤");
+			throw new RuntimeException(unifiedErrorMsg);
 		}
 
-		// 建立登入成功物件
-		return memberMapper.memberToLoggedInMember(member);
+		// 轉型成 DTO
+		LoginResponse dto = memberMapper.memberToLoginResponse(member);
+
+		// 生成並注入 Token
+		String role = member.getIsAdmin() ? "ADMIN" : "USER";
+		String token = jwtUtil.generateToken(member.getMemberId().toString(), role);
+		dto.setToken(token);
+
+		return dto;
 	}
 
 }

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import com.eeit.vue3.backend.model.dto.LoggedInMember;
+import com.eeit.vue3.backend.model.dto.LoginResponse;
 import com.eeit.vue3.backend.service.AuthService;
 import com.eeit.vue3.backend.utils.JwtUtil;
 
@@ -42,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		// 讀取 member 資料
 		Integer memberId = Integer.valueOf(jwtUtil.getSubject(jwtToken));
-		LoggedInMember memberDto = authService.getMemberById(memberId);
+		LoginResponse memberDto = authService.getMemberById(memberId);
 
 		/**
 		 * UsernamePasswordAuthenticationToken 為 Spring Security 設計用於表示「已認證身份」的標準物件

@@ -14,12 +14,12 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtUtil {
 
-	// 私鑰字串，配置於 application.properties
-	@Value("${jwt.secret}")
-	private String jwtSecret;
+	public JwtUtil(@Value("${jwt.secret}") String jwtSecret) {
+		this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+	}
 
-	// 私鑰
-	private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+	// 計算用私鑰物件
+	private final SecretKey secretKey;
 
 	// JWT 有效時間，單位為秒
 	private final long EXPIRATION_IN_SECONDS = 60 * 60;
@@ -34,7 +34,7 @@ public class JwtUtil {
 				// .claim("role", List.of("user", "admin")) // 也可存放物件
 				.issuedAt(new Date()) // 設定發行時間
 				.expiration(new Date(System.currentTimeMillis() + EXPIRATION_IN_SECONDS * 1000)) // 設定到期時間
-				.signWith(SECRET_KEY) // 使用私鑰簽名
+				.signWith(secretKey) // 使用私鑰簽名
 				.compact(); // 產生 token
 	}
 
@@ -43,7 +43,7 @@ public class JwtUtil {
 	 */
 	public Claims getClaims(String token) {
 		return Jwts.parser() // 使用 parser() 取得解析器
-				.verifyWith(SECRET_KEY) // 設定解密用密鑰
+				.verifyWith(secretKey) // 設定解密用密鑰
 				.build() // 建立解析器
 				.parseSignedClaims(token) // 解析 token
 				.getPayload(); // 取得解析後結果

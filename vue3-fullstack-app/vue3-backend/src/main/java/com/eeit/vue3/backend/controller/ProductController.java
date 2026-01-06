@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eeit.vue3.backend.model.dto.PageQuery;
-import com.eeit.vue3.backend.model.dto.ProductDto;
+import com.eeit.vue3.backend.model.dto.ProductResponse;
 import com.eeit.vue3.backend.model.dto.ProductQuery;
 import com.eeit.vue3.backend.service.ProductService;
 
@@ -23,17 +23,17 @@ public class ProductController {
 	private final ProductService productService;
 
 	@GetMapping("/all")
-	public List<ProductDto> getAll() {
+	public List<ProductResponse> getAll() {
 		return productService.getAll();
 	}
 
 	@GetMapping("/query")
-	public List<ProductDto> getByQuery(@ModelAttribute ProductQuery query) {
+	public List<ProductResponse> getByQuery(@ModelAttribute ProductQuery query) {
 		return productService.getByQuery(query);
 	}
 
 	@GetMapping("/page")
-	public Page<ProductDto> getByPaginated(@ModelAttribute PageQuery query) {
+	public Page<ProductResponse> getByPaginated(@ModelAttribute PageQuery query) {
 		return productService.getByPaginated(query);
 	}
 }

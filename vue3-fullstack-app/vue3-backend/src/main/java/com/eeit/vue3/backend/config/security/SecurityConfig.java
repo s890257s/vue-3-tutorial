@@ -32,15 +32,14 @@ public class SecurityConfig {
 		corsConfiguration.setAllowedHeaders(List.of("*"));
 
 		return http
-				// 1. 開啟 CORS (前端 5500 -> 後端 8080，不同 Port 視為跨域)
+				// 1. 開啟 CORS (前端 5173 -> 後端 8080，不同 Port 視為跨域)
 				.cors(cros -> cros.configurationSource(request -> corsConfiguration))
 				// 2. 關閉 CSRF (因為是無狀態 API)
 				.csrf(csrf -> csrf.disable())
 				// 3. 關閉 Session (改用 JWT)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				// 4. 允許所有請求
-				.authorizeHttpRequests(auth -> auth
-						.anyRequest().permitAll())
+				.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
 				// 5. 插入 JWT Filter (雖然允許所有請求，但還是要解析 Token 才知道是誰)
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();

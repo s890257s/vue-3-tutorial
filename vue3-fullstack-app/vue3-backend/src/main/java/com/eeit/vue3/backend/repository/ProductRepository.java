@@ -7,4 +7,6 @@ import com.eeit.vue3.backend.model.entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
 
+    boolean existsByProductPhotoIsNotNull();
+
 }
