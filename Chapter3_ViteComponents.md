@@ -317,7 +317,7 @@ root/
 
 **`<script setup>` 的優勢：**
 
-- **更少樣板代碼**：不需要 `export default`，也不用 `setup()` 函式。
+- **更少樣板程式碼**：不需要 `export default`，也不用 `setup()` 函式。
 - **不需要 return**：頂層宣告的變數、函式、import 的內容，在 `<template>` 中**自動可用**。
 - **更佳的執行效能**：編譯出的程式碼比標準 `setup()` 函式更高效。
 - **Vue 3 最佳實作**：這種寫法是 Vue 3 官方推薦的最佳實作。

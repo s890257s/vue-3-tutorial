@@ -136,7 +136,7 @@ const addSimple = (a, b) => a + b;
 
 ### <a id="CH1-3-1"></a>[1. 變數嵌入](#目錄)
 
-使用反引號 (backtick) `來包覆字串，並用`${}` 嵌入變數。
+使用反引號 (backtick) `\` ` 來包覆字串，並用 `${}` 嵌入變數。
 
 ```javascript
 const name = "Alice";
@@ -241,6 +241,14 @@ const deepCopiedUser = JSON.parse(JSON.stringify(user));
 
 deepCopiedUser.address.city = "台中市";
 console.log(user.address.city); // 台北市 (不受影響)
+```
+
+**補充：現代化的深層拷貝 `structuredClone` (推薦)**
+
+在現代瀏覽器 (2022+) 與 Node.js (17+) 環境中，建議使用原生的 `structuredClone` 方法，它的效能更好且支援更多資料型別 (如 `Date`, `RegExp`)。
+
+```javascript
+const deepCopiedUser = structuredClone(user);
 ```
 
 ---

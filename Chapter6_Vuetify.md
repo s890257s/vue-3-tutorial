@@ -160,7 +160,7 @@ createVuetify({
         </h3>
         <hr />
         <h3>使用者: <v-icon icon="mdi-account" /></h3>
-        <h3>綠色笑鼠: <v-icon icon="mdi-emoticon-lol" color="success" /></h3>
+        <h3>綠色大笑: <v-icon icon="mdi-emoticon-lol" color="success" /></h3>
         <h3>紅色警告: <v-icon color="error" icon="mdi-alert"></v-icon></h3>
         <h3>
           Hex color(十六進位色碼) 雲朵:

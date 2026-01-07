@@ -272,7 +272,7 @@ Vue 3 引入了 **Composition API** 之後，我們可以利用它的靈活性�
 ```javascript
 import { ref } from "vue";
 
-export function useToggle(initialValue = false) {
+export const useToggle = (initialValue = false) => {
   const value = ref(initialValue);
 
   const toggle = () => {
@@ -311,7 +311,7 @@ const { value: isPasswordVisible, toggle: togglePassword } = useToggle()
 ```javascript
 import { ref, onMounted, onUnmounted } from "vue";
 
-export function useMouse() {
+export const useMouse = () => {
   const x = ref(0);
   const y = ref(0);
 
@@ -357,7 +357,7 @@ const { x, y } = useMouse()
 ```javascript
 import { ref, computed } from "vue";
 
-export function usePagination(initPage = 1, initPageSize = 10) {
+export const usePagination = (initPage = 1, initPageSize = 10) => {
   const currentPage = ref(initPage);
   const pageSize = ref(initPageSize);
   const total = ref(0); // 總筆數 (通常由 API 回傳)
@@ -431,7 +431,7 @@ import { ref } from "vue";
 import axios from "axios";
 
 // 接收一個 url 當參數
-export function useFetch(url) {
+export const useFetch = (url) => {
   const data = ref(null);
   const error = ref(null);
   const isLoading = ref(false);
@@ -570,9 +570,9 @@ export const useCounterStore = defineStore("counter", () => {
   const doubleCount = computed(() => count.value * 2);
 
   // 3. Actions (方法)
-  function increment() {
+  const increment = () => {
     count.value++;
-  }
+  };
 
   // 記得要把想公開的東西 return 出去
   return { count, doubleCount, increment };

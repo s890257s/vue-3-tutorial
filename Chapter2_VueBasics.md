@@ -963,11 +963,11 @@ watchEffect(() => {
 
 ### <a id="CH2-9-3"></a>[3. 清除副作用](#目錄)
 
-當 `watchEffect` 重新執行（依賴變更）或元件卸載時，我們可能需要清除上一次執行所產生的副作用（例如：取消 API 請求、清除計時器）。我們可以透過傳入的 `onCleanup` 函式來達成。
+當 `watchEffect` 重新執行（依賴變更）或元件銷毀時，我們可能需要清除上一次執行所產生的副作用（例如：取消 API 請求、清除計時器）。我們可以透過傳入的 `onCleanup` 函式來達成。
 
 ```javascript
 /*
-  onCleanup 用於註冊清理回調，它會在「副作用重新執行前」或「元件卸載時」觸發，確保舊的副作用（如計時器）被正確清除。
+  onCleanup 用於註冊清理回調，它會在「副作用重新執行前」或「元件銷毀時」觸發，確保舊的副作用（如計時器）被正確清除。
 
   以下程式碼會啟動一個計時器，每一秒使 count.value +1。
   當依賴的 title.value 變更時，會重新執行 watchEffect，並清除上一次的計時器。
@@ -982,7 +982,7 @@ watchEffect((onCleanup) => {
     count.value++;
   }, 1000);
 
-  // 當依賴變更導致重新執行，或元件卸載時觸發，onCleanup 有保護機制，內部修改不會重新調用 watchEffect。
+  // 當依賴變更導致重新執行，或元件銷毀時觸發，onCleanup 有保護機制，內部修改不會重新調用 watchEffect。
   onCleanup(() => {
     clearInterval(timer);
     console.log("Cleanup timer");
