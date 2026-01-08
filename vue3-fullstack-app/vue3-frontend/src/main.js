@@ -20,5 +20,13 @@ import * as directives from "vuetify/directives";
 const vuetify = createVuetify({ components, directives });
 app.use(vuetify);
 
+// Toastification
+import Toast from "vue-toastification";
+import "vue-toastification/dist/index.css";
+app.use(Toast, {
+  position: "top-right",
+  timeout: 3000,
+});
+
 // 掛載
 app.mount("#app");

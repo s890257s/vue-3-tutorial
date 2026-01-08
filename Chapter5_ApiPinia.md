@@ -47,9 +47,12 @@ Axios 則貼心地幫我們處理好了這些瑣事，並提供了強大的 **�
 
 **Axios 主要優勢：**
 
-1.  **自動轉換 JSON**：不用像 `fetch` 那樣還要多寫一行 `response.json()`。
-2.  **更好的錯誤處理**：只要 HTTP 狀態碼不是 2xx，Axios 就會直接拋出錯誤 (catch)，而 `fetch` 只會在網路斷線時才報錯，其他錯誤得自行判斷。
-3.  **攔截器 (Interceptors)**：這是最強大的功能！我們可以設定在 **請求發送前** 自動幫每個請求加上 Token，或是在 **回應回來後** 統一處理錯誤（例如 Token 過期自動登出）。
+1.  **自動轉換 JSON**：  
+    不用像 `fetch` 那樣還要多寫一行 `response.json()`。
+2.  **更好的錯誤處理**：
+    只要 HTTP 狀態碼不是 2xx，Axios 就會直接拋出錯誤 (catch)，而 `fetch` 只會在網路斷線時才報錯，其他錯誤得自行判斷。
+3.  **攔截器 (Interceptors)**：
+    這是最強大的功能！我們可以設定在 **請求發送前** 自動幫每個請求加上 Token，或是在 **回應回來後** 統一處理錯誤（例如 Token 過期自動登出）。
 
 ### <a id="CH5-1-2"></a>[2. 安裝與基本使用](#目錄)
 
@@ -77,7 +80,7 @@ const fetchData = async () => {
 };
 ```
 
-### <a id="CH5-1-3"></a>[3. 完整 Axios 範例 (Cheat Sheet)](#目錄)
+### <a id="CH5-1-3"></a>[3. 完整 Axios 範例](#目錄)
 
 開發中常會遇到各種請求需求，這裡整理了幾種常用的情境。
 
@@ -253,9 +256,12 @@ Vue 3 引入了 **Composition API** 之後，我們可以利用它的靈活性�
 
 **特點：**
 
-1.  **慣例命名**：通常以 `use` 開頭，例如 `useMouse`, `useFetch`。
-2.  **邏輯封裝**：把實現特定功能的 `ref`, `method`, `watch`, `onMounted` 全部打包在一起。
-3.  **高度重用**：可以在不同元件中引入同一個 Composable，享受相同的邏輯。
+1.  **慣例命名**：
+    通常以 `use` 開頭，例如 `useMouse`, `usePagination`。這只是社群慣例（VueUse、官方範例常用），**並非 Vue 的強制規範**。你也可以命名為 `createPagination` 或 `mouseTracker`，只是可讀性與辨識度通常不如 `useXxx` 來得好。
+2.  **邏輯封裝**：
+    通常回傳有一組「狀態＋操作方法」，必要時也可包含 `watch` 或生命週期 (`onMounted` 等) 來管理副作用。
+3.  **高度重用**：
+    可以在不同元件中引入同一個 Composable，享受相同的邏輯。
 
 ---
 
@@ -284,7 +290,7 @@ export const useToggle = (initialValue = false) => {
   const hide = () => (value.value = false);
 
   return { value, toggle, show, hide };
-}
+};
 ```
 
 **元件中使用：**
@@ -328,7 +334,7 @@ export const useMouse = () => {
   onUnmounted(() => window.removeEventListener("mousemove", update));
 
   return { x, y };
-}
+};
 ```
 
 **元件中使用：**
@@ -346,7 +352,15 @@ const { x, y } = useMouse()
 ```
 
 **這樣封裝有什麼好處？**  
-**生命週期管理自動化**：開發者只需呼叫 `useMouse()` 就能獲得座標，完全不用擔心什麼時候要 addEventListener 或 removeEventListener，也不會因為忘記移除而造成記憶體洩漏。
+**生命週期管理自動化**：  
+開發者只需呼叫 `useMouse()` 就能獲得座標，完全不用擔心什麼時候要 addEventListener 或 removeEventListener，也不會因為忘記移除而造成記憶體洩漏。
+
+> **💡 小提醒：座標系統**
+>
+> - `pageX` / `pageY`：相對 **整個文件 (Document)** 的座標（包含捲動距離）。
+> - `clientX` / `clientY`：相對 **視窗 (Viewport)** 的座標。
+>
+> 依據需求選擇適合的座標系統，範例中使用 `pageX` 是為了追蹤在頁面上的絕對位置。
 
 #### 範例三：分頁邏輯 (usePagination) - 處理複雜計算
 
@@ -355,15 +369,18 @@ const { x, y } = useMouse()
 **`src/composables/usePagination.js`**
 
 ```javascript
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 export const usePagination = (initPage = 1, initPageSize = 10) => {
   const currentPage = ref(initPage);
   const pageSize = ref(initPageSize);
   const total = ref(0); // 總筆數 (通常由 API 回傳)
 
-  // 計算總頁數
-  const totalPage = computed(() => Math.ceil(total.value / pageSize.value));
+  // 計算總頁數 (需考慮 total=0 的情況，並確保至少有 1 頁或是定義明確的 0 頁)
+  const totalPage = computed(() => {
+    if (total.value <= 0) return 0; // 或 return 1，視 UI 設計而定
+    return Math.ceil(total.value / pageSize.value);
+  });
 
   // 切換頁碼的方法
   const payload = computed(() => ({
@@ -383,6 +400,15 @@ export const usePagination = (initPage = 1, initPageSize = 10) => {
     total.value = count;
   };
 
+  // 💡 實務坑：當篩選條件改變導致 total 變少 (例如 10 頁變 2 頁)，
+  // 但 currentPage 還停在第 8 頁時，會發生資料空的狀況。
+  // 所以要監聽 totalPage，確保 currentPage 不會超出範圍。
+  watch(totalPage, (newTotalPage) => {
+    if (currentPage.value > newTotalPage) {
+      currentPage.value = Math.max(1, newTotalPage); // 拉回最後一頁 (若 totalPage=0 則回到 1 或 0)
+    }
+  });
+
   return {
     currentPage,
     pageSize,
@@ -393,7 +419,7 @@ export const usePagination = (initPage = 1, initPageSize = 10) => {
     setTotal,
     payload,
   };
-}
+};
 ```
 
 **元件中使用：**
@@ -419,65 +445,6 @@ setTotal(50)
 
 **這樣封裝有什麼好處？**  
 **邏輯複用**：不管是在「商品列表」、「訂單記錄」還是「用戶管理」，只要有分頁需求，直接引入 `usePagination` 即可，不用每次都重寫 `prev`, `next` 跟計算總頁數的公式！
-
-#### 範例四：API 請求 (useFetch)
-
-我們把 `data`, `error`, `isLoading` 等常見的三個 API 狀態封裝起來。
-
-**`src/composables/useFetch.js`**
-
-```javascript
-import { ref } from "vue";
-import axios from "axios";
-
-// 接收一個 url 當參數
-export const useFetch = (url) => {
-  const data = ref(null);
-  const error = ref(null);
-  const isLoading = ref(false);
-
-  const execute = async () => {
-    isLoading.value = true;
-    data.value = null;
-    error.value = null;
-
-    try {
-      const res = await axios.get(url);
-      data.value = res.data;
-    } catch (err) {
-      error.value = err;
-    } finally {
-      isLoading.value = false;
-    }
-  };
-
-  // 自動執行 (選擇性)
-  execute();
-
-  return { data, error, isLoading, execute };
-}
-```
-
-**元件中使用：**
-
-```javascript
-<script setup>
-import { useFetch } from '@/composables/useFetch'
-
-// 一行程式碼就搞定 API 呼叫與狀態管理！
-const { data, error, isLoading } = useFetch('https://jsonplaceholder.typicode.com/users')
-</script>
-
-<template>
-  <div v-if="isLoading">載入中...</div>
-  <div v-else-if="error">出錯了: {{ error.message }}</div>
-  <pre v-else>{{ data }}</pre>
-</template>
-```
-
-**這樣封裝有什麼好處？**  
-**統一的狀態管理**  
-所有的 API 請求都具備一致的 Loading 與 Error 處理機制。你不需要在每個元件裡手動寫 `isLoading = true` 然後 `finally { isLoading = false }`，大幅減少了重複程式碼，也讓程式碼更乾淨易讀。
 
 ---
 
@@ -525,8 +492,8 @@ const { data, error, isLoading } = useFetch('https://jsonplaceholder.typicode.co
 > | **狀態範圍** | 預設為區域 (Local)，需自行實作 Singleton 才能共用 | 天生全域 (Global) 單例模式          |
 > | **除錯工具** | 無 (但在 Vue DevTools 可見 Ref)                   | 專屬 DevTools (時光機、Action 追蹤) |
 > | **SSR 支援** | 需手動處理 Hydration                              | 內建支援                            |
-> | **結構規範** | 自由發揮 (容易寫成義大利麵)                       | 強制規範 (State/Getter/Action)      |
-> | **適用場景** | **邏輯複用** (如 useMouse, useFetch)              | **全域資料** (如 User, Cart, Theme) |
+> | **結構規範** | 自由發揮 (容易寫成義大利麵)                       | 結構明確 (State/Getter/Action)      |
+> | **適用場景** | **邏輯複用** (如 useMouse, usePagination)         | **全域資料** (如 User, Cart, Theme) |
 >
 > **結論：**  
 > 如果是為了「抽離邏輯」給多個元件用，選 Composables；如果是為了「跨元件共用資料」，選 Pinia。
@@ -555,7 +522,7 @@ app.mount("#app");
 Pinia 支援兩種寫法：Option Store (像 Vue 2) 和 Setup Store (像 Vue 3 Composition API)。
 **我們推薦使用 Setup Store**，因為它寫起來就跟平常寫元件一模一樣！
 
-**`src/stores/counter.js`：**
+**`src/stores/counterStore.js`：**
 
 ```javascript
 import { defineStore } from "pinia";
@@ -585,7 +552,7 @@ export const useCounterStore = defineStore("counter", () => {
 >
 > ```javascript
 > export const useCounterStore = defineStore("counter", {
->   // 1. State: 必須是 Arrow Function (為了避免 SSR 污染)
+>   // 1. State: 必須是一個「回傳新物件的 function」，確保建立的 store 有獨立的 state
 >   state: () => ({
 >     count: 0,
 >   }),
@@ -611,9 +578,9 @@ export const useCounterStore = defineStore("counter", () => {
 
 **解決方法：使用 `storeToRefs`。**
 
-```javascript
+```html
 <script setup>
-import { useCounterStore } from '@/stores/counter'
+import { useCounterStore } from '@/stores/counterStore'
 import { storeToRefs } from 'pinia'
 
 const store = useCounterStore()
@@ -665,7 +632,7 @@ const { increment } = store
 1.  **UI 乾淨單純**：元件只負責「呼叫 Action」與「顯示 State」，不處理複雜的非同步流程與錯誤捕捉。
 2.  **邏輯可重用**：同一個 API 請求（例如「取得使用者資料」或「登入」）可能會在多個頁面或元件用到，封裝在 Store 裡就不用到處複製貼上。
 
-**範例：使用者登入 Store (`src/stores/user.js`)**
+**範例：使用者登入 Store (`src/stores/userStore.js`)**
 
 我們將 `token` 管理、API 請求、錯誤處理都藏在 Store 裡面。
 
@@ -716,7 +683,7 @@ export const useUserStore = defineStore("user", () => {
 <script setup>
   import { ref } from "vue";
   import { useRouter } from "vue-router";
-  import { useUserStore } from "@/stores/user";
+  import { useUserStore } from "@/stores/userStore";
 
   const username = ref("");
   const password = ref("");
@@ -735,7 +702,7 @@ export const useUserStore = defineStore("user", () => {
 </script>
 ```
 
-**範例二：商品列表 Store (`src/stores/product.js`)**
+**範例二：商品列表 Store (`src/stores/productStore.js`)**
 
 ```javascript
 import { defineStore } from "pinia";
@@ -770,7 +737,7 @@ export const useProductStore = defineStore("product", () => {
 ```html
 <script setup>
   import { onMounted } from "vue";
-  import { useProductStore } from "@/stores/product";
+  import { useProductStore } from "@/stores/productStore";
   import { storeToRefs } from "pinia";
 
   const store = useProductStore();
@@ -979,6 +946,125 @@ export default router;
 ```
 
 > **重點**：不要在檔案最外層 (Top-level) 呼叫 `useUserStore()`，一定要在 `beforeEach` 等函式內部呼叫，否則會因為 Pinia 還沒實例化而報錯！
+
+---
+
+### <a id="備註-專案結構詳解"></a>備註：專案結構詳解
+
+在開發 Vue 專案時，保持良好的目錄結構對於維護性至關重要。以下是一個標準的 Vite + Vue 3 專案結構範例，以及每個目錄的用途說明：
+
+```
+my-vue-app/
+├── public/              # 靜態資源目錄 (不會被 Vite 編譯)
+├── src/                 # 原始碼目錄 (開發主要區域)
+│   ├── api/             # API 定義層 (Axios 封裝、Endpoints)
+│   ├── assets/          # 靜態資源 (會被 Vite 編譯，如圖片、global css)
+│   ├── components/      # 共用元件 (Buttons, Cards, Inputs...)
+│   ├── composables/     # 組合式函式 (共用邏輯 hook)
+│   ├── router/          # 路由設定 (Vue Router)
+│   ├── services/        # (可選) 業務邏輯層 (整合 API 與資料轉換)
+│   ├── stores/          # 狀態管理 (Pinia Stores)
+│   ├── utils/           # 共用工具函式 (純函式)
+│   ├── views/           # 頁面元件 (對應路由的頁面)
+│   ├── App.vue          # 根元件 (Root Component)
+│   └── main.js          # 程式入口點 (Entry Point)
+├── index.html           # 應用程式入口 HTML
+├── vite.config.js       # Vite 設定檔
+├── .env*                # 環境變數設定檔
+└── package.json         # 專案依賴與腳本設定
+```
+
+**詳細說明與分類：**
+
+為了方便理解，我們可以將這些目錄分為五大類：
+
+**1. 靜態資源 (Static Assets)**
+
+*   **public/**
+    *   放置**不需要**經過 Vite 打包處理的靜態檔案，例如 `favicon.ico` 或 `robots.txt`。
+    *   這些檔案**不會被壓縮或 Hash**，但在建置 (Build) 時會**直接複製到 dist 目錄**。
+    *   可以用絕對路徑 `/` 直接存取 (例如 `/favicon.ico`)。
+*   **src/assets/**
+    *   放置**需要**經過 Vite 處理 (壓縮、Hash 命名) 的資源，例如 Logo 圖片、全域樣式表 (CSS/Sass)。
+
+**2. 核心與路由 (Core & Routing)**
+
+*   **main.js** 與 **App.vue**
+    *   **main.js**：Vue 應用程式的起點，負責掛載 App、Router 與 Pinia。
+    *   **App.vue**：整個頁面的最外層容器。
+*   **src/router/**
+    *   放置 Vue Router 的路由設定檔 `index.js`。
+*   **.env 相關檔案**
+    *   放置**環境變數**，例如 API 的 Base URL (`VITE_API_URL`)。
+    *   常見檔案：`.env` (通用)、`.env.development` (開發)、`.env.production` (正式)。
+    *   ⚠️ **注意**：Vite 的 `VITE_` 變數會被打包進前端程式碼中（公開），**切勿存放 Token 或密碼等機密資料**。
+
+**3. UI 元件 (UI Components)**
+
+*   **src/views/** (或是 `pages/`)
+    *   放置**路由對應的頁面**。
+    *   > **💡 命名慣例**：`views` 是 Vue Router 的經典命名；`pages` 則常見於 Nuxt 或 File-based routing 的框架中。
+    *   通常負責組裝 Components，並與 Router 和 Store 互動。
+*   **src/components/**
+    *   放置**小型、可重複使用**的 UI 元件。
+    *   例如：`BaseButton.vue`, `NavBar.vue`。
+    *   只負責顯示與觸發事件，通常不包含複雜業務邏輯。
+
+**4. 狀態與邏輯 (State & Logic)**
+
+*   **src/stores/**
+    *   放置 **Pinia** 的狀態管理檔案。
+    *   管理全域狀態 (User, Cart) 與跨元件的業務流程。
+*   **src/composables/** (或是 `hooks/`)
+    *   放置**抽離出來的邏輯函式** (Composition API)。
+    *   封裝可複用的「有狀態邏輯」，例如 `useToggle`, `useMouse`。
+*   **src/utils/**
+    *   放置**純粹的計算或工具函式** (Pure Functions)。
+    *   例如：日期格式化、正則驗證。
+    *   這層應為「純 JavaScript」，不依賴 Vue 的響應式系統。
+
+**5. API 與網路層 (Network & Services)**
+
+*   **src/api/**
+    *   **專注於 HTTP 細節**。
+    *   包含 Axios 實例設定、Interceptors、以及定義各個 Endpoints (URL, Method, Params)。
+*   **src/services/ (可選)**
+    *   **專注於 商業規則 與 資料整形**。
+    *   當邏輯較複雜時，用來呼叫多個 API、處理 DTO (Data Transfer Object) 轉換，讓 UI 層拿到乾淨的資料。
+
+### 💡 依賴方向 (Dependency Direction)
+
+在架構設計中，**「誰可以 import 誰」**是非常重要的規則。重點在於**「單向依賴 (向下依賴)」**，上層可以呼叫下層，但下層絕不可反向依賴上層。
+
+**常見的依賴層級 (可跨層呼叫)：**
+
+`UI Layers (Views/Components)` ⤵ 
+`Logic Layers (Composables/Stores)` ⤵ 
+`Data Layers (Services/API)`
+
+**詳細規則：**
+
+1.  **UI Layers (src/views, src/components)**
+    *   可以 import：`Stores`, `Composables`, `Utils`。
+    *   可以直接呼叫 `Stores` 或 `Composables` 來取得資料。
+    *   **不建議**直接 import `API` (應透過 Store 或 Service 處理，保持 UI 乾淨)。
+
+2.  **Logic Layers (src/composables, src/stores)**
+    *   **Composables**：可以用來封裝 View 的邏輯，也可以依需求引用 `Store`。
+    *   **Stores**：負責管理狀態與資料流。可以 import `API`, `Services`, `Utils`。
+    *   **⚠️ Store 限制**：Store **不應該** import 包含 Vue Lifecycle 或 DOM 操作的 `Composable`，也**絕對不可** import `Views`；如果只是需要純邏輯計算，請將該函式移至 `Utils`。
+
+3.  **Data Layers (src/services, src/api)**
+    *   **Services / API**：只負責資料處理與傳輸。
+    *   可以 import：`Utils`、`HTTP Client (Axios)`、環境變數。
+    *   **保持純淨**：這一層**不應該依賴 Vue 的 Reactive State (Ref/Store)**，以確保邏輯可以被獨立測試與使用。
+
+4.  **Utils (src/utils)**
+    *   **最底層**：純工具函式。
+    *   不依賴上述任何一層，只依賴第三方套件 (如 `lodash`, `date-fns`)。
+
+> **🚫 禁止逆向依賴**：
+> 下層模組 (如 API, Utils) 不應引用上層模組 (如 Store, Component)，這會導致嚴重的**圓形依賴 (Circular Dependency)** 與耦合問題。
 
 ---
 

@@ -1,4 +1,8 @@
 import axios from "axios";
+import { createToastInterface } from "vue-toastification";
+
+// 建立 toast 介面 (用於非組件環境)
+const toast = createToastInterface();
 
 // 建立 axios 實體
 const instance = axios.create({
@@ -33,28 +37,28 @@ instance.interceptors.response.use(
   },
   (error) => {
     // 對回應錯誤做點什麼
-    if (error.response) {
-      switch (error.response.status) {
-        case 401:
-          // 未授權，可能需要重新登入
-          console.error("未授權，請重新登入");
-          // 可以在這裡執行登出或導向登入頁的操作
-          break;
-        case 403:
-          console.error("權限不足");
-          break;
-        case 404:
-          console.error("找不到資源");
-          break;
-        case 500:
-          console.error("伺服器錯誤");
-          break;
-        default:
-          console.error("發生錯誤", error.message);
-      }
-    } else {
-      console.error("網路錯誤或伺服器無回應", error.message);
+    if (!error.response) {
+      toast.error("網路錯誤或伺服器無回應");
+      return Promise.reject(error);
     }
+
+    switch (error.response.status) {
+      case 401:
+        toast.error("未授權，請重新登入");
+        break;
+      case 403:
+        toast.error("權限不足");
+        break;
+      case 404:
+        toast.error("找不到資源");
+        break;
+      case 500:
+        toast.error("伺服器錯誤");
+        break;
+      default:
+        toast.error("發生錯誤: " + error.message);
+    }
+
     return Promise.reject(error);
   }
 );
