@@ -6,7 +6,7 @@ const toast = createToastInterface();
 
 // 建立 axios 實體
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "/api", // 預設 API 路徑
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api", // 預設 API 路徑
   timeout: 10000, // 請求超時時間 (10秒)
   headers: {
     "Content-Type": "application/json",

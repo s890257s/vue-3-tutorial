@@ -1,5 +1,5 @@
-import axios from './index';
+import http from './http';
 
 export const loginAPI = (data) => {
-  return axios.post('/auth/login', data);
+  return http.post('/auth/login', data);
 };
