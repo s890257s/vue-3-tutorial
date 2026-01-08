@@ -23,7 +23,7 @@ public class Vue3BackendApplication {
 	private static void preCreateDatabase() {
 		try {
 			// 從 properties 取得連線資訊
-			ClassPathResource classPathResource = new ClassPathResource("mssql-jdbc.properties");
+			ClassPathResource classPathResource = new ClassPathResource("application-mssql.properties");
 			Properties properties = PropertiesLoaderUtils.loadProperties(classPathResource);
 
 			String jdbcUrl = properties.getProperty("spring.datasource.url");

@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Vue3BackendApplication",
+      "request": "launch",
+      "mainClass": "com.eeit.vue3.backend.Vue3BackendApplication",
+      "projectName": "vue3-backend",
+      "args": "--spring.profiles.active=mssql"
+    }
+  ]
+}
