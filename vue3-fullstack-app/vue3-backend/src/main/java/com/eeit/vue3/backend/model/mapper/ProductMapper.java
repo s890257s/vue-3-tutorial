@@ -1,28 +1,24 @@
 package com.eeit.vue3.backend.model.mapper;
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import com.eeit.vue3.backend.model.dto.ProductResponse;
 import com.eeit.vue3.backend.model.entity.Product;
 import com.eeit.vue3.backend.utils.CommonUtil;
 
-@Component
-public class ProductMapper {
+@Mapper(componentModel = "spring")
+/**
+ * 商品資料轉換器 (Mapper)
+ * <p>
+ * 改用 MapStruct 自動生成實作類別。
+ * 負責將 Entity 轉換為 DTO，並處理 Base64 圖片轉換。
+ */
+public interface ProductMapper {
 
-	public ProductResponse toDto(Product entity) {
-		ProductResponse dto = new ProductResponse();
-		BeanUtils.copyProperties(entity, dto);
-
-		dto.setId(entity.getProductId());
-		dto.setName(entity.getProductName());
-
-		// 將 photo 的 byte[] 轉換成 Base64 格式
-		byte[] photo = entity.getProductPhoto();
-		String base64Image = CommonUtil.getBase64Image(photo);
-		dto.setPhoto(base64Image);
-
-		return dto;
-	}
+	@Mapping(source = "productId", target = "id")
+	@Mapping(source = "productName", target = "name")
+	@Mapping(source = "productPhoto", target = "photo")
+	ProductResponse toDto(Product entity);
 
 }

@@ -19,6 +19,16 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @Slf4j
+/**
+ * Spring Security 安全配置類別
+ * <p>
+ *在此類別中配置：
+ * 1. CORS (跨來源資源共用) 設定
+ * 2. CSRF (跨站請求偽造) 防護關閉 (因為是 REST API)
+ * 3. Session 管理策略 (無狀態)
+ * 4. HTTP 請求權限控制
+ * 5. 添加 JWT 認證過濾器
+ */
 public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;

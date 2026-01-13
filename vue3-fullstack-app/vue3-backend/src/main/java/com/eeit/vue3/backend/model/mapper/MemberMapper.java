@@ -9,6 +9,12 @@ import com.eeit.vue3.backend.model.dto.LoginResponse;
 import com.eeit.vue3.backend.model.entity.Member;
 
 @Mapper(componentModel = "spring")
+/**
+ * 會員資料轉換器 (Mapper)
+ * <p>
+ * 使用 MapStruct 自動生成實作類別。
+ * 負責將 Entity 轉換為 DTO，或將 DTO 轉換為 Entity。
+ */
 public interface MemberMapper {
 
 	@Mapping(target = "token", ignore = true)

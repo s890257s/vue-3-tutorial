@@ -13,6 +13,11 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table
+/**
+ * 會員實體類 (Entity)
+ * <p>
+ * 對應資料庫中的 Member 資料表。
+ */
 public class Member {
 
 	@Id

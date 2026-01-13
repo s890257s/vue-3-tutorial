@@ -15,6 +15,11 @@ import com.eeit.vue3.backend.model.mapper.MemberMapper;
 
 @Service
 @RequiredArgsConstructor
+/**
+ * 會員服務層 (Service)
+ * <p>
+ * 處理會員資料的 CRUD 邏輯。
+ */
 public class MemberService {
 
 	private final MemberRepository memberRepository;

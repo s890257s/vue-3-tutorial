@@ -8,6 +8,11 @@ import java.util.Base64;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+/**
+ * 通用工具類別
+ * <p>
+ * 提供 byte[] 處理、Base64 轉換、MIME Type 猜測等輔助方法。
+ */
 public class CommonUtil {
 
 	/**

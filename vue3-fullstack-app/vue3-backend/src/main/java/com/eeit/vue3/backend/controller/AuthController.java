@@ -14,6 +14,11 @@ import com.eeit.vue3.backend.service.AuthService;
 
 @RestController
 @RequestMapping("/api/auth")
+/**
+ * 認證控制器 (Controller)
+ * <p>
+ * 提供登入相關的 API 接口。
+ */
 public class AuthController {
 
 	private AuthService authService;

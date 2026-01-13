@@ -11,6 +11,6 @@ public class ProductResponse {
 	private String name;
 	private Integer price;
 	private String color;
-	private String photo;
+	private byte[] photo;
 
 }

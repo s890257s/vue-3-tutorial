@@ -16,8 +16,13 @@ import com.eeit.vue3.backend.service.ProductService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/products")
 @RequiredArgsConstructor
+/**
+ * 商品控制器 (Controller)
+ * <p>
+ * 提供商品查詢的 API 接口 (列表、搜尋、分頁)。
+ */
 public class ProductController {
 
 	private final ProductService productService;
@@ -27,12 +32,12 @@ public class ProductController {
 		return productService.getAll();
 	}
 
-	@GetMapping("/query")
+	@GetMapping("/search")
 	public List<ProductResponse> getByQuery(@ModelAttribute ProductQuery query) {
 		return productService.getByQuery(query);
 	}
 
-	@GetMapping("/page")
+	@GetMapping
 	public Page<ProductResponse> getByPaginated(@ModelAttribute PageQuery query) {
 		return productService.getByPaginated(query);
 	}

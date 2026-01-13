@@ -12,6 +12,12 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 @Component
+/**
+ * JWT 工具類別
+ * <p>
+ * 負責 JWT Token 的生成、解析、驗證等核心功能。
+ * 使用 JJWT (Java JWT) 套件實作。
+ */
 public class JwtUtil {
 
 	public JwtUtil(@Value("${jwt.secret}") String jwtSecret) {

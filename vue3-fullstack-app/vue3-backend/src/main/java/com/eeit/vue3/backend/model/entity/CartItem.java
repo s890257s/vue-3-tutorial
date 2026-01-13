@@ -14,6 +14,12 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table
+/**
+ * 購物車項目實體類 (Entity)
+ * <p>
+ * 對應資料庫中的 CartItem 資料表。
+ * 使用 @ManyToOne 關聯 Member 與 Product。
+ */
 public class CartItem {
 
 	@Id

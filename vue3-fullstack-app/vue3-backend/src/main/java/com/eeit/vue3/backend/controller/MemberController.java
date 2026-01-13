@@ -25,12 +25,20 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
+/**
+ * 會員控制器 (Controller)
+ * <p>
+ * 提供會員 CRUD 的 API 接口。
+ */
 public class MemberController {
 
     private final MemberService memberService;
 
     private final MemberMapper memberMapper;
 
+    /**
+     * 取得會員列表 (分頁)
+     */
     @GetMapping
     public Page<MemberResponseDto> getMembers(
             @RequestParam(defaultValue = "1") int page,

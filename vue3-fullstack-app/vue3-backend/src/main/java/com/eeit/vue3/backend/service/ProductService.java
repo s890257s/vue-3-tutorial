@@ -24,6 +24,14 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+/**
+ * 商品服務層 (Service)
+ * <p>
+ * 負責商品查詢邏輯，包含：
+ * 1. 取得所有商品
+ * 2. 動態條件查詢 (Specification)
+ * 3. 分頁查詢
+ */
 public class ProductService {
 
 	private final ProductMapper productMapper;

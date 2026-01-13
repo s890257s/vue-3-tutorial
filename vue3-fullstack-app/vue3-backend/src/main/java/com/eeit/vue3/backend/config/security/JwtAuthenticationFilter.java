@@ -18,6 +18,15 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
+/**
+ * JWT 認證過濾器
+ * <p>
+ * 繼承 {@link OncePerRequestFilter} 確保在一次請求中只會執行一次。
+ * 主要功能：
+ * 1. 攔截所有 HTTP 請求
+ * 2. 檢查 Header 中是否有有效的 JWT Token
+ * 3. 若 Token 有效，則解析使用者資訊並設定到 Spring Security 的 SecurityContext 中
+ */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final AuthService authService;
