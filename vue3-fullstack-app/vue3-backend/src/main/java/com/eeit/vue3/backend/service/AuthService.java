@@ -31,7 +31,7 @@ public class AuthService {
 	public LoginResponse getMemberById(Integer id) {
 		Member member = memberRepository.findById(id)
 				.orElseThrow(() -> new RuntimeException("找不到使用者 id: " + id));
-		LoginResponse loginResponse = memberMapper.memberToLoginResponse(member);
+		LoginResponse loginResponse = memberMapper.toLoginResponse(member);
 		return loginResponse;
 	}
 
@@ -70,7 +70,7 @@ public class AuthService {
 		}
 
 		// 轉型成 DTO
-		LoginResponse dto = memberMapper.memberToLoginResponse(member);
+		LoginResponse dto = memberMapper.toLoginResponse(member);
 
 		// 生成並注入 Token
 		String role = member.getIsAdmin() ? "ADMIN" : "USER";

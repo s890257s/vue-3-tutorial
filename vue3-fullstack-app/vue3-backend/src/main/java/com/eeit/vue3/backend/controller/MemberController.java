@@ -16,16 +16,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eeit.vue3.backend.model.entity.Member;
 import com.eeit.vue3.backend.service.MemberService;
+import com.eeit.vue3.backend.dto.MemberDto;
+import com.eeit.vue3.backend.dto.MemberResponseDto;
+import com.eeit.vue3.backend.model.mapper.MemberMapper;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/members")
+@RequiredArgsConstructor
 public class MemberController {
 
-    @Autowired
-    private MemberService memberService;
+    private final MemberService memberService;
+
+    private final MemberMapper memberMapper;
 
     @GetMapping
-    public Page<Member> getMembers(
+    public Page<MemberResponseDto> getMembers(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
 
@@ -40,12 +47,14 @@ public class MemberController {
     }
 
     @PostMapping
-    public Member insert(@RequestBody Member member) {
+    public MemberResponseDto insert(@RequestBody MemberDto memberDto) {
+        Member member = memberMapper.toMember(memberDto);
         return memberService.insert(member);
     }
 
     @PutMapping("/{id}")
-    public Member update(@PathVariable Integer id, @RequestBody Member member) {
+    public MemberResponseDto update(@PathVariable Integer id, @RequestBody MemberDto memberDto) {
+        Member member = memberMapper.toMember(memberDto);
         return memberService.update(id, member);
     }
 

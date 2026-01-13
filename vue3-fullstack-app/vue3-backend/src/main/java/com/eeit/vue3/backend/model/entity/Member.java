@@ -30,6 +30,4 @@ public class Member {
 	@Lob
 	private byte[] memberPhoto;
 
-	private Integer point;
-
 }

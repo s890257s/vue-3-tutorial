@@ -8,31 +8,41 @@ import org.springframework.stereotype.Service;
 import com.eeit.vue3.backend.model.entity.Member;
 import com.eeit.vue3.backend.repository.MemberRepository;
 
+import lombok.RequiredArgsConstructor;
+
+import com.eeit.vue3.backend.dto.MemberResponseDto;
+import com.eeit.vue3.backend.model.mapper.MemberMapper;
+
 @Service
+@RequiredArgsConstructor
 public class MemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
+	private final MemberRepository memberRepository;
 
-    public Page<Member> findAll(Pageable pageable) {
-        return memberRepository.findAll(pageable);
-    }
+	private final MemberMapper memberMapper;
 
-    public Member insert(Member member) {
-        return memberRepository.save(member);
-    }
+	public Page<MemberResponseDto> findAll(Pageable pageable) {
+		return memberRepository.findAll(pageable).map(memberMapper::toMemberResponseDto);
+	}
 
-    public Member update(Integer id, Member member) {
-        return memberRepository.findById(id).map(existing -> {
-            existing.setEmail(member.getEmail());
-            existing.setMemberName(member.getMemberName());
-            existing.setMemberPhoto(member.getMemberPhoto());
-            // Update other fields as necessary, e.g., password if provided
-            return memberRepository.save(existing);
-        }).orElseThrow(() -> new RuntimeException("Member not found"));
-    }
+	public MemberResponseDto insert(Member member) {
+		Member savedMember = memberRepository.save(member);
+		return memberMapper.toMemberResponseDto(savedMember);
+	}
 
-    public void deleteById(Integer id) {
-        memberRepository.deleteById(id);
-    }
+	public MemberResponseDto update(Integer id, Member member) {
+		Member updatedMember = memberRepository.findById(id).map(existing -> {
+			existing.setEmail(member.getEmail());
+			existing.setMemberName(member.getMemberName());
+			existing.setMemberPhoto(member.getMemberPhoto());
+			// Update other fields as necessary, e.g., password if provided
+			return memberRepository.save(existing);
+		}).orElseThrow(() -> new RuntimeException("Member not found"));
+
+		return memberMapper.toMemberResponseDto(updatedMember);
+	}
+
+	public void deleteById(Integer id) {
+		memberRepository.deleteById(id);
+	}
 }

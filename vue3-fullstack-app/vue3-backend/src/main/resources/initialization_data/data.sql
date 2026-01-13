@@ -2,50 +2,43 @@ INSERT INTO [member] (
         [is_admin],
         [email],
         [password],
-        [member_name],
-        [point]
+        [member_name]
     )
 VALUES (
         1,
         'alice@example.com',
-        '$2b$10$THYAMQrpnAXIzceXH3gV0OWrBA/MLYo3MkFfbKBdU2zLYmpQqFYhy',
-        N'愛麗絲',
-        100
+        '1234',
+        N'愛麗絲'
     ),
     (
         0,
         'bob@example.com',
-        '$2b$10$THYAMQrpnAXIzceXH3gV0OWrBA/MLYo3MkFfbKBdU2zLYmpQqFYhy',
-        N'鮑伯',
-        80
+        '1234',
+        N'鮑伯'
     ),
     (
         0,
         'charlie@example.com',
-        '$2b$10$THYAMQrpnAXIzceXH3gV0OWrBA/MLYo3MkFfbKBdU2zLYmpQqFYhy',
-        N'查理',
-        120
+        '1234',
+        N'查理'
     ),
     (
         0,
         'dave@example.com',
-        '$2b$10$THYAMQrpnAXIzceXH3gV0OWrBA/MLYo3MkFfbKBdU2zLYmpQqFYhy',
-        N'大衛',
-        50
+        '1234',
+        N'大衛'
     ),
     (
         0,
         'eve@example.com',
-        '$2b$10$THYAMQrpnAXIzceXH3gV0OWrBA/MLYo3MkFfbKBdU2zLYmpQqFYhy',
-        N'伊芙',
-        0
+        '1234',
+        N'伊芙'
     ),
     (
         0,
         'zoe@example.com',
-        '$2b$10$THYAMQrpnAXIzceXH3gV0OWrBA/MLYo3MkFfbKBdU2zLYmpQqFYhy',
-        N'柔伊',
-        200
+        '1234',
+        N'柔伊'
     );
 INSERT INTO [product] ([product_name], [price], [color])
 VALUES ('asus ROG Phone 9', 39900, N'黑色'),

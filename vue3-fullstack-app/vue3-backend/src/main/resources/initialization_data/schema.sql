@@ -7,7 +7,6 @@ CREATE TABLE [member] (
     [password] NVARCHAR(255),
     [member_name] NVARCHAR(255),
     [member_photo] VARBINARY(MAX),
-    [point] INT
 );
 
 CREATE TABLE product (
@@ -22,7 +21,7 @@ CREATE TABLE cart_item (
     [cart_item_id] INT IDENTITY(1,1) PRIMARY KEY,
     [member_id] INT NOT NULL,
     [product_id] INT NOT NULL,
-    [qty] INT,
+    [quantity] INT,
     FOREIGN KEY ([member_id]) REFERENCES [member]([member_id]),
     FOREIGN KEY ([product_id]) REFERENCES [product]([product_id])
 );
