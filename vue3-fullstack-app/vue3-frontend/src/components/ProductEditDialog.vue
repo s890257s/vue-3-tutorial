@@ -1,19 +1,23 @@
 <script setup>
+// 引入 Vue 核心功能
 import { ref, watch } from "vue";
 import { getPhoto } from "@/utils/commonUtil";
 
+// 定義 Props
 const props = defineProps({
-  modelValue: Boolean,
-  initialItem: Object,
-  title: String,
+  modelValue: Boolean, // 控制顯示
+  initialItem: Object, // 初始資料
+  title: String,       //標題
 });
 
+// 定義 Events
 const emit = defineEmits(["update:modelValue", "save"]);
 
+// 狀態
 const dialog = ref(false);
 const localItem = ref({});
 
-// 同步 prop modelValue 與 local dialog
+// 雙向綁定 dialog 顯示狀態 (v-model)
 watch(
   () => props.modelValue,
   (val) => {
@@ -28,7 +32,7 @@ watch(
   }
 );
 
-// 當 initialItem 變更時，同步到 localItem
+// 同步初始資料到本地編輯變數
 watch(
   () => props.initialItem,
   (val) => {
@@ -37,23 +41,25 @@ watch(
   { deep: true, immediate: true }
 );
 
+// 關閉
 const close = () => {
   dialog.value = false;
 };
 
+// 儲存
 const save = () => {
   emit("save", localItem.value);
 };
 
-// 檔案處理
+// 圖片上傳 (轉 Base64)
 const handlePhotoUpload = (e) => {
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onload = () => {
-    // 移除 "data:image/xy;base64," 前綴
     const result = reader.result;
+    // 移除前綴，只保留 Base64 編碼部分
     localItem.value.photo = result.split(",")[1];
   };
 };

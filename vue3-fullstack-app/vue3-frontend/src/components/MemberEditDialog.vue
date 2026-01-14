@@ -1,19 +1,24 @@
 <script setup>
+// 引入 Vue 核心功能
 import { ref, watch } from "vue";
 import { getPhoto } from "@/utils/commonUtil";
 
+// 定義組件接收的屬性 (Props)
 const props = defineProps({
-  modelValue: Boolean,
-  initialItem: Object,
-  title: String,
+  modelValue: Boolean, // 控制對話框顯示的雙向綁定變數 (v-model)
+  initialItem: Object, // 傳入的初始資料 (編輯時為該會員資料，新增時為空)
+  title: String,       // 對話框標題
 });
 
+// 定義組件可觸發的事件 (Emits)
 const emit = defineEmits(["update:modelValue", "save"]);
 
-const dialog = ref(false);
-const localItem = ref({});
+// 內部狀態
+const dialog = ref(false); // 控制內部 v-dialog 的顯示
+const localItem = ref({}); // 用於表單綁定的本地資料，避免直接修改 props
 
-// 同步 prop modelValue 與 local dialog
+// 監聽 props.modelValue 變化，同步到內部 dialog
+// 這是為了實現 v-model (父組件控制顯示)
 watch(
   () => props.modelValue,
   (val) => {
@@ -21,6 +26,7 @@ watch(
   }
 );
 
+// 監聽內部 dialog 變化，通知父組件更新 modelValue
 watch(
   () => dialog.value,
   (val) => {
@@ -29,31 +35,41 @@ watch(
 );
 
 // 當 initialItem 變更時，同步到 localItem
+// immediate: true 表示組件初始化時也會執行一次
+// deep: true 表示深度監聽物件內部變化
 watch(
   () => props.initialItem,
   (val) => {
+    // 使用解構賦值複製物件，避免直接參考同一個記憶體位址
     localItem.value = { ...val };
   },
   { deep: true, immediate: true }
 );
 
+// 關閉對話框
 const close = () => {
   dialog.value = false;
 };
 
+// 儲存資料
 const save = () => {
+  // 觸發 save 事件，將編輯後的資料回傳給父組件
   emit("save", localItem.value);
 };
 
-// 檔案處理
+// 檔案上傳處理 (處理圖片轉 Base64)
 const handlePhotoUpload = (e) => {
   const file = e.target.files[0];
   if (!file) return;
+
+  // 使用 FileReader 讀取檔案內容
   const reader = new FileReader();
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(file); // 讀取為 Data URL (Base64)
   reader.onload = () => {
-    // 移除 "data:image/xy;base64," 前綴
+    // 讀取完成後執行
+    // result 格式為 "data:image/jpeg;base64,....."
     const result = reader.result;
+    // 我們只需要逗號後面的 Base64 字串
     localItem.value.memberPhoto = result.split(",")[1];
   };
 };
