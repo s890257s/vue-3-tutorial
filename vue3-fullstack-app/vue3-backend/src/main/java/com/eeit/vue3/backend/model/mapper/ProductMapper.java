@@ -3,7 +3,9 @@ package com.eeit.vue3.backend.model.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.eeit.vue3.backend.model.dto.ProductResponse;
+import com.eeit.vue3.backend.dto.ProductCreateDto;
+import com.eeit.vue3.backend.dto.ProductResponseDto;
+import com.eeit.vue3.backend.dto.ProductUpdateDto;
 import com.eeit.vue3.backend.model.entity.Product;
 
 @Mapper(componentModel = "spring")
@@ -18,6 +20,16 @@ public interface ProductMapper {
 	@Mapping(source = "productId", target = "id")
 	@Mapping(source = "productName", target = "name")
 	@Mapping(source = "productPhoto", target = "photo")
-	ProductResponse toDto(Product entity);
+	ProductResponseDto toDto(Product entity);
+
+	@Mapping(source = "name", target = "productName")
+	@Mapping(source = "photo", target = "productPhoto")
+	@Mapping(target = "productId", ignore = true)
+	Product toEntity(ProductCreateDto dto);
+
+	@Mapping(source = "name", target = "productName")
+	@Mapping(source = "photo", target = "productPhoto")
+	@Mapping(target = "productId", ignore = true)
+	Product toEntity(ProductUpdateDto dto);
 
 }

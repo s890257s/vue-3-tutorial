@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.eeit.vue3.backend.dto.CartItemRequestDto;
+import com.eeit.vue3.backend.dto.CartItemCreateDto;
 import com.eeit.vue3.backend.dto.CartItemResponseDto;
 import com.eeit.vue3.backend.model.entity.CartItem;
 import com.eeit.vue3.backend.model.entity.Member;
@@ -38,6 +38,9 @@ public class CartService {
 
 	/**
 	 * 取得指定會員的購物車內容
+	 *
+	 * @param memberId 會員 ID
+	 * @return 購物車項目列表
 	 */
 	public List<CartItemResponseDto> getMemberCart(Integer memberId) {
 		return cartItemRepository.findByMemberMemberId(memberId).stream()
@@ -49,18 +52,22 @@ public class CartService {
 	 * 新增商品至購物車
 	 * <p>
 	 * 若商品已存在購物車中，則增加數量；若不存在，則新增一筆記錄。
+	 *
+	 * @param memberId 會員 ID
+	 * @param dto      購物車新增資料 (商品 ID、數量)
+	 * @throws RuntimeException 當找不到會員或商品時拋出
 	 */
 	@Transactional
-	public void addItem(CartItemRequestDto dto) {
+	public void addItem(Integer memberId, CartItemCreateDto dto) {
 		Optional<CartItem> existingItem = cartItemRepository.findByMemberMemberIdAndProductProductId(
-				dto.getMemberId(), dto.getProductId());
+				memberId, dto.getProductId());
 
 		if (existingItem.isPresent()) {
 			CartItem item = existingItem.get();
 			item.setQty(item.getQty() + dto.getQty());
 			cartItemRepository.save(item);
 		} else {
-			Member member = memberRepository.findById(dto.getMemberId())
+			Member member = memberRepository.findById(memberId)
 					.orElseThrow(() -> new RuntimeException("Member not found"));
 			Product product = productRepository.findById(dto.getProductId())
 					.orElseThrow(() -> new RuntimeException("Product not found"));
@@ -75,6 +82,10 @@ public class CartService {
 
 	/**
 	 * 更新購物車商品數量
+	 *
+	 * @param cartItemId 購物車項目 ID
+	 * @param qty        新的數量
+	 * @throws RuntimeException 當找不到購物車項目時拋出
 	 */
 	public void updateItem(Integer cartItemId, Integer qty) {
 		CartItem item = cartItemRepository.findById(cartItemId)
@@ -85,6 +96,8 @@ public class CartService {
 
 	/**
 	 * 移除購物車中的單一商品
+	 *
+	 * @param cartItemId 購物車項目 ID
 	 */
 	public void removeItem(Integer cartItemId) {
 		cartItemRepository.deleteById(cartItemId);
@@ -92,6 +105,10 @@ public class CartService {
 
 	/**
 	 * 清空指定會員的購物車
+	 * <p>
+	 * 刪除該會員的所有購物車項目。
+	 *
+	 * @param memberId 會員 ID
 	 */
 	@Transactional
 	public void clearCart(Integer memberId) {

@@ -31,7 +31,11 @@ public class JwtUtil {
 	private final long EXPIRATION_IN_SECONDS = 60 * 60;
 
 	/**
-	 * 產生 JWT
+	 * 產生 JWT Token
+	 *
+	 * @param userId 使用者 ID (將作為 Subject)
+	 * @param role   使用者角色 (將存入 calim "role")
+	 * @return 簽名後的 JWT 字串
 	 */
 	public String generateToken(String userId, String role) {
 		return Jwts.builder() // 使用 builder 模式設定 token
@@ -45,7 +49,13 @@ public class JwtUtil {
 	}
 
 	/**
-	 * 解析並驗證 JWT，若驗證失敗則拋出例外
+	 * 解析並驗證 JWT
+	 * <p>
+	 * 會驗證簽名是否正確以及 Token 是否過期。
+	 *
+	 * @param token JWT 字串
+	 * @return 解析後的 Claims 物件 (包含 payload 資料)
+	 * @throws io.jsonwebtoken.JwtException 當驗證失敗時拋出各種子類別例外
 	 */
 	public Claims getClaims(String token) {
 		return Jwts.parser() // 使用 parser() 取得解析器
@@ -56,7 +66,10 @@ public class JwtUtil {
 	}
 
 	/**
-	 * 取得主題 (通常是 User ID)
+	 * 取得 Token 主題 (Subject)，通常存放 User ID
+	 *
+	 * @param token JWT 字串
+	 * @return User ID
 	 */
 	public String getSubject(String token) {
 		return getClaims(token).getSubject();
@@ -71,6 +84,11 @@ public class JwtUtil {
 
 	/**
 	 * 驗證 Token 是否合法
+	 * <p>
+	 * 嘗試解析 Token，若無拋出例外則視為合法。
+	 *
+	 * @param token JWT 字串
+	 * @return true 若合法，否則拋出例外 (不回傳 false，而是直接拋錯)
 	 */
 	public Boolean isTokenValid(String token) {
 		getSubject(token); // 若 token 有任何例外，則由 jjwt 套件直接拋出錯誤。

@@ -2,18 +2,20 @@ package com.eeit.vue3.backend.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eeit.vue3.backend.dto.CartItemRequestDto;
+import com.eeit.vue3.backend.dto.CartItemCreateDto;
+import com.eeit.vue3.backend.dto.CartItemQtyUpdateDto;
 import com.eeit.vue3.backend.dto.CartItemResponseDto;
+import com.eeit.vue3.backend.model.dto.LoginResponse;
 import com.eeit.vue3.backend.service.CartService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,36 +24,37 @@ import lombok.RequiredArgsConstructor;
  * 購物車控制器 (Controller)
  * <p>
  * 提供購物車 CRUD 的 API。
+ * RESTful 設計，使用隱含的 User Context (/api/cart)。
  */
 @RestController
-@RequestMapping("/api/carts")
+@RequestMapping("/api/cart")
 @RequiredArgsConstructor
 public class CartController {
 
 	private final CartService cartService;
 
 	/**
-	 * 取得特定會員的購物車
+	 * 取得當前使用者的購物車
 	 */
-	@GetMapping("/{memberId}")
-	public List<CartItemResponseDto> getMemberCart(@PathVariable Integer memberId) {
-		return cartService.getMemberCart(memberId);
+	@GetMapping("/items")
+	public List<CartItemResponseDto> getMyCart(@AuthenticationPrincipal LoginResponse user) {
+		return cartService.getMemberCart(user.getMemberId());
 	}
 
 	/**
 	 * 新增商品到購物車
 	 */
 	@PostMapping("/items")
-	public void addItem(@RequestBody CartItemRequestDto dto) {
-		cartService.addItem(dto);
+	public void addItem(@AuthenticationPrincipal LoginResponse user, @RequestBody CartItemCreateDto dto) {
+		cartService.addItem(user.getMemberId(), dto);
 	}
 
 	/**
-	 * 更新購物車商品數量
+	 * 更新購物車商品數量 (PATCH)
 	 */
-	@PutMapping("/items/{cartItemId}")
-	public void updateItem(@PathVariable Integer cartItemId, @RequestParam Integer qty) {
-		cartService.updateItem(cartItemId, qty);
+	@PatchMapping("/items/{cartItemId}")
+	public void updateQty(@PathVariable Integer cartItemId, @RequestBody CartItemQtyUpdateDto dto) {
+		cartService.updateItem(cartItemId, dto.getQty());
 	}
 
 	/**
@@ -65,8 +68,8 @@ public class CartController {
 	/**
 	 * 清空購物車
 	 */
-	@DeleteMapping("/{memberId}")
-	public void clearCart(@PathVariable Integer memberId) {
-		cartService.clearCart(memberId);
+	@DeleteMapping("/items")
+	public void clearCart(@AuthenticationPrincipal LoginResponse user) {
+		cartService.clearCart(user.getMemberId());
 	}
 }

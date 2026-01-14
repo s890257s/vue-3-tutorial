@@ -25,6 +25,14 @@ public class AuthController {
 
 	private final AuthService authService;
 
+	/**
+	 * 會員登入
+	 * <p>
+	 * 驗證 email 和密碼，成功後回傳 JWT Token。
+	 *
+	 * @param loginRequest 登入請求 (包含 email 和 password)
+	 * @return 登入回應 (包含 JWT Token 和會員資訊)
+	 */
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
 

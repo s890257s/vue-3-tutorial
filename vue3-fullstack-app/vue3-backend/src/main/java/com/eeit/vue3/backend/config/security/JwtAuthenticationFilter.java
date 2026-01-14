@@ -32,39 +32,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final AuthService authService;
 	private final JwtUtil jwtUtil;
 
+	/**
+	 * 核心過濾邏輯
+	 *
+	 * @param request     HTTP 請求
+	 * @param response    HTTP 回應
+	 * @param filterChain 過濾鏈 (用於將請求傳遞給下一個過濾器)
+	 */
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		// 從 headers 中取得 Authorization header
+		// 1. 從 headers 中取得 Authorization header
 		final String authHeader = request.getHeader("Authorization");
 
-		// 若 http 請求的 headers 中不包含 Authorization；或者 headers 中包含
-		// Authorization，但格式不合法，則直接交由 Spring Security 處理
+		// 2. 檢查 Header 是否存在且格式正確 (必須以 "Bearer " 開頭)
+		// 若不符合，代表沒有攜帶 Token 或格式錯誤，直接放行給下一個 Filter (Spring Security 會處理未授權的情況)
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 
-		// 提取 jwt token
+		// 3. 提取 JWT Token (去掉 "Bearer " 前綴)
 		final String jwtToken = authHeader.substring(7);
 
-		// 讀取 member 資料
+		// 4. 解析 Token 並認證
+		// 若 Token 簽名驗證失敗或過期，getSubject() 會拋出例外，這裡會由全域例外處理捕捉 (或 filter 內部捕捉)
 		Integer memberId = Integer.valueOf(jwtUtil.getSubject(jwtToken));
+		
+		// 根據 ID 查出會員資料 (確認會員確實存在)
 		LoginResponse memberDto = authService.getMemberById(memberId);
 
+		// 5. 建立 Spring Security 認證物件 (Authentication)
 		/**
-		 * UsernamePasswordAuthenticationToken 為 Spring Security 設計用於表示「已認證身份」的標準物件
-		 * 參數一: 認證成功的使用者物件
-		 * 參數二: 憑證、密碼等物件，但在 JWT 驗證中不須提供(若是傳統 MVC 表單認證才須提供)
-		 * 參數三: 權限列表物件
+		 * UsernamePasswordAuthenticationToken: Spring Security 用來代表「已認證使用者」的物件
+		 * - principal: 使用者主體 (這裡放 memberDto)
+		 * - credentials: 密碼 (JWT 驗證不需要，放 null)
+		 * - authorities: 權限列表 (目前先放 null)
 		 */
 		UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 				memberDto, null, null);
 
-		// 在此次 HTTP 請求(context)中，儲存驗證成功的 user
+		// 6. 將認證物件存入 SecurityContext
+		// 這樣後續的 Controller 就可以透過 @AuthenticationPrincipal 取得使用者資訊
 		SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 
-		// 繼續執行過濾鏈
+		// 7. 繼續執行下一個過濾器
 		filterChain.doFilter(request, response);
 	}
 

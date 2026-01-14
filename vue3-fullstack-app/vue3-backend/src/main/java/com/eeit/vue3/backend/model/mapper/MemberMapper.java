@@ -4,7 +4,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.eeit.vue3.backend.dto.MemberResponseDto;
-import com.eeit.vue3.backend.dto.MemberDto;
+import com.eeit.vue3.backend.dto.MemberCreateDto;
+import com.eeit.vue3.backend.dto.MemberUpdateDto;
 import com.eeit.vue3.backend.model.dto.LoginResponse;
 import com.eeit.vue3.backend.model.entity.Member;
 
@@ -26,5 +27,9 @@ public interface MemberMapper {
 	// 如果前端需要 Base64 圖片，請在 DTO 新增欄位，不要覆蓋 Email
 
 	@Mapping(target = "memberId", ignore = true)
-	Member toMember(MemberDto dto);
+	Member toMember(MemberCreateDto dto);
+
+	@Mapping(target = "memberId", ignore = true)
+	@Mapping(target = "password", ignore = true) // Update doesn't handle password
+	Member toMember(MemberUpdateDto dto);
 }

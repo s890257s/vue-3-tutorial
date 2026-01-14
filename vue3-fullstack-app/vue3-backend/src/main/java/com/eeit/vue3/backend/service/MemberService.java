@@ -25,15 +25,35 @@ public class MemberService {
 
 	private final MemberMapper memberMapper;
 
+	/**
+	 * 查詢所有會員 (分頁)
+	 *
+	 * @param pageable 分頁資訊 (頁碼、每頁筆數、排序)
+	 * @return 會員分頁結果 (包含 DTO)
+	 */
 	public Page<MemberResponseDto> findAll(Pageable pageable) {
 		return memberRepository.findAll(pageable).map(memberMapper::toMemberResponseDto);
 	}
 
+	/**
+	 * 新增會員
+	 *
+	 * @param member 待新增的會員實體
+	 * @return 新增後的會員 DTO
+	 */
 	public MemberResponseDto insert(Member member) {
 		Member savedMember = memberRepository.save(member);
 		return memberMapper.toMemberResponseDto(savedMember);
 	}
 
+	/**
+	 * 更新會員資料
+	 *
+	 * @param id     會員 ID
+	 * @param member 包含更新資料的會員實體
+	 * @return 更新後的會員 DTO
+	 * @throws RuntimeException 當會員不存在時拋出
+	 */
 	public MemberResponseDto update(Integer id, Member member) {
 		Member updatedMember = memberRepository.findById(id).map(existing -> {
 			existing.setEmail(member.getEmail());
@@ -46,6 +66,11 @@ public class MemberService {
 		return memberMapper.toMemberResponseDto(updatedMember);
 	}
 
+	/**
+	 * 刪除會員
+	 *
+	 * @param id 會員 ID
+	 */
 	public void deleteById(Integer id) {
 		memberRepository.deleteById(id);
 	}

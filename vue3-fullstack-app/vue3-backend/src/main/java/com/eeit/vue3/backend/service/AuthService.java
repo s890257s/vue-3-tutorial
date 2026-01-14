@@ -32,6 +32,10 @@ public class AuthService {
 
 	/**
 	 * 根據 ID 查找登入使用者資訊
+	 *
+	 * @param id 會員 ID
+	 * @return 登入者資訊 DTO
+	 * @throws RuntimeException 當找不到使用者時拋出
 	 */
 	public LoginResponse getMemberById(Integer id) {
 		Member member = memberRepository.findById(id)
@@ -41,14 +45,20 @@ public class AuthService {
 	}
 
 	/**
-	 * 根據 ID 查找登入使用者資訊，多載方法，讓呼叫者無須自己實作轉型
+	 * 根據 ID 查找登入使用者資訊 (String 版本)
+	 *
+	 * @param id 會員 ID (字串)
+	 * @return 登入者資訊 DTO
 	 */
 	public LoginResponse getMemberById(String id) {
 		return getMemberById(Integer.parseInt(id));
 	}
 
 	/**
-	 * 取得當前登入的使用者
+	 * 取得當前登入的使用者 (從 SecurityContext 取得)
+	 *
+	 * @return 當前登入者的詳細資訊
+	 * @throws RuntimeException 當使用者尚未登入時拋出
 	 */
 	public LoginResponse getLoggedInMember() {
 		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -62,6 +72,13 @@ public class AuthService {
 		return loginResponse;
 	}
 
+	/**
+	 * 會員登入邏輯
+	 *
+	 * @param loginRequest 登入請求資料
+	 * @return 登入成功回應 (包含 Token)
+	 * @throws RuntimeException 當帳號或密碼錯誤時拋出
+	 */
 	public LoginResponse login(LoginRequest loginRequest) {
 		String unifiedErrorMsg = "帳號或密碼錯誤";
 

@@ -33,24 +33,31 @@ public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+	/**
+	 * 配置 Security Filter Chain (安全過濾鏈)
+	 * <p>
+	 * 這是 Spring Security 執行的核心。每一個請求都會經過這個鏈。
+	 */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		// CORS: 設定允許的 domain、method、header
 		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		corsConfiguration.setAllowedOrigins(List.of("*"));
-		corsConfiguration.setAllowedMethods(List.of("*"));
-		corsConfiguration.setAllowedHeaders(List.of("*"));
+		corsConfiguration.setAllowedOrigins(List.of("*")); // 允許所有來源 (開發階段方便)
+		corsConfiguration.setAllowedMethods(List.of("*")); // 允許所有 HTTP 方法 (GET, POST, PUT, DELETE...)
+		corsConfiguration.setAllowedHeaders(List.of("*")); // 允許所有 Header
 
 		return http
-				// 1. 開啟 CORS (前端 5173 -> 後端 8080，不同 Port 視為跨域)
+				// 1. 開啟 CORS (因為前端在 5173，後端在 8080，不同 Port 視為跨域，必須開啟)
 				.cors(cros -> cros.configurationSource(request -> corsConfiguration))
-				// 2. 關閉 CSRF (因為是無狀態 API)
+				// 2. 關閉 CSRF (因為我們使用 JWT 機制，不是基於 Cookie/Session，所以不需要防範 CSRF)
 				.csrf(csrf -> csrf.disable())
-				// 3. 關閉 Session (改用 JWT)
+				// 3. 設定 Session 管理策略為「無狀態」(STATELESS)
+				// 這意味著 Server 不會保存使用者的 Session，每次請求都必須攜帶 Token
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				// 4. 允許所有請求
+				// 4. 設定路由權限 (目前為了開發方便，允許所有請求 permitAll)
 				.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-				// 5. 插入 JWT Filter (雖然允許所有請求，但還是要解析 Token 才知道是誰)
+				// 5. 將自定義的 JWT 過濾器加入 Filter Chain
+				// 加在 UsernamePasswordAuthenticationFilter 之前，確保先驗證 Token
 				.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}
