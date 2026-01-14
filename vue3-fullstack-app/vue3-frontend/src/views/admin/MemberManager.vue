@@ -17,6 +17,7 @@ const headers = [
   { title: "ID", key: "memberId", align: "start" },
   { title: "Email", key: "email" },
   { title: "姓名", key: "memberName" },
+  { title: "管理員", key: "isAdmin" },
   { title: "大頭貼", key: "memberPhoto" },
   { title: "操作", key: "actions", sortable: false },
 ];
@@ -32,6 +33,7 @@ const editedItem = ref({
   memberName: "",
   memberPhoto: "",
   password: "",
+  isAdmin: false,
 });
 const defaultItem = {
   memberId: null,
@@ -39,6 +41,7 @@ const defaultItem = {
   memberName: "",
   memberPhoto: "",
   password: "",
+  isAdmin: false,
 };
 
 // 計算屬性
@@ -142,6 +145,11 @@ const save = async (item) => {
               </v-btn>
             </template>
           </v-toolbar>
+        </template>
+
+        <template v-slot:item.isAdmin="{ item }">
+          <v-icon v-if="item.isAdmin" color="success">mdi-check</v-icon>
+          <v-icon v-else color="grey">mdi-close</v-icon>
         </template>
 
         <template v-slot:item.memberPhoto="{ item }">

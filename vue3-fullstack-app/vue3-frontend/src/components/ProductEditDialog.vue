@@ -54,7 +54,7 @@ const handlePhotoUpload = (e) => {
   reader.onload = () => {
     // 移除 "data:image/xy;base64," 前綴
     const result = reader.result;
-    localItem.value.memberPhoto = result.split(",")[1];
+    localItem.value.photo = result.split(",")[1];
   };
 };
 </script>
@@ -71,39 +71,32 @@ const handlePhotoUpload = (e) => {
           <v-row>
             <v-col cols="12" sm="6" md="12">
               <v-text-field
-                v-model="localItem.email"
-                label="Email"
+                v-model="localItem.name"
+                label="商品名稱"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="12">
               <v-text-field
-                v-model="localItem.memberName"
-                label="姓名"
+                v-model.number="localItem.price"
+                label="價格"
+                type="number"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="12">
-              <v-switch
-                v-model="localItem.isAdmin"
-                label="管理員權限"
-                color="primary"
-                hide-details
-              ></v-switch>
-            </v-col>
-            <v-col cols="12" sm="6" md="12" v-if="!localItem.memberId">
               <v-text-field
-                v-model="localItem.password"
-                label="密碼"
+                v-model="localItem.color"
+                label="顏色"
               ></v-text-field>
             </v-col>
             <v-col cols="12" sm="6" md="12">
               <v-file-input
-                label="大頭貼"
+                label="商品圖片"
                 @change="handlePhotoUpload"
                 accept="image/*"
                 prepend-icon="mdi-camera"
               ></v-file-input>
-              <v-avatar size="64" class="mt-2" v-if="localItem.memberPhoto">
-                <v-img :src="getPhoto(localItem.memberPhoto)"></v-img>
+              <v-avatar size="64" class="mt-2" v-if="localItem.photo">
+                <v-img :src="getPhoto(localItem.photo)"></v-img>
               </v-avatar>
             </v-col>
           </v-row>
