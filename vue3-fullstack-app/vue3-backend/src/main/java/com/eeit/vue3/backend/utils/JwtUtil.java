@@ -11,13 +11,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-@Component
 /**
  * JWT 工具類別
  * <p>
  * 負責 JWT Token 的生成、解析、驗證等核心功能。
  * 使用 JJWT (Java JWT) 套件實作。
  */
+@Component
 public class JwtUtil {
 
 	public JwtUtil(@Value("${jwt.secret}") String jwtSecret) {
@@ -45,7 +45,7 @@ public class JwtUtil {
 	}
 
 	/**
-	 * 解析並驗證 JWT，若驗證失敗則拋出異常
+	 * 解析並驗證 JWT，若驗證失敗則拋出例外
 	 */
 	public Claims getClaims(String token) {
 		return Jwts.parser() // 使用 parser() 取得解析器
@@ -73,7 +73,7 @@ public class JwtUtil {
 	 * 驗證 Token 是否合法
 	 */
 	public Boolean isTokenValid(String token) {
-		getSubject(token); // 若 token 有任何異常，則由 jjwt 套件直接拋出錯誤。
+		getSubject(token); // 若 token 有任何例外，則由 jjwt 套件直接拋出錯誤。
 		return true; // 能走到回傳表示驗證通過，token 合法
 	}
 

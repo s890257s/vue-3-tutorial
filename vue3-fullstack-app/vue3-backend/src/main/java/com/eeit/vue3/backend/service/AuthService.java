@@ -13,13 +13,13 @@ import com.eeit.vue3.backend.utils.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
-@RequiredArgsConstructor
 /**
  * 認證服務層 (Service)
  * <p>
  * 負責處理登入驗證、JWT Token 生成以及取得當前登入者資訊。
  */
+@Service
+@RequiredArgsConstructor
 public class AuthService {
 
 	private final MemberRepository memberRepository;

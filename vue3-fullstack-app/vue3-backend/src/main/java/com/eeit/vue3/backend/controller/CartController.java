@@ -18,14 +18,14 @@ import com.eeit.vue3.backend.service.CartService;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
-@RequestMapping("/api/carts")
-@RequiredArgsConstructor
 /**
  * 購物車控制器 (Controller)
  * <p>
- * 提供購物車 CRUD 的 API 接口。
+ * 提供購物車 CRUD 的 API。
  */
+@RestController
+@RequestMapping("/api/carts")
+@RequiredArgsConstructor
 public class CartController {
 
 	private final CartService cartService;

@@ -16,8 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 
-@Configuration
-@RequiredArgsConstructor
 /**
  * JWT 認證過濾器
  * <p>
@@ -27,10 +25,11 @@ import lombok.RequiredArgsConstructor;
  * 2. 檢查 Header 中是否有有效的 JWT Token
  * 3. 若 Token 有效，則解析使用者資訊並設定到 Spring Security 的 SecurityContext 中
  */
+@Configuration
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	private final AuthService authService;
-
 	private final JwtUtil jwtUtil;
 
 	@Override

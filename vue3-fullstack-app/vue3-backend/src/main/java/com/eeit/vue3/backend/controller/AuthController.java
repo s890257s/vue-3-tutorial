@@ -7,25 +7,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 import com.eeit.vue3.backend.model.dto.LoginResponse;
 import com.eeit.vue3.backend.model.dto.LoginRequest;
 import com.eeit.vue3.backend.service.AuthService;
 
-@RestController
-@RequestMapping("/api/auth")
 /**
  * 認證控制器 (Controller)
  * <p>
- * 提供登入相關的 API 接口。
+ * 提供登入相關的 API。
  */
+@RestController
+@RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
-	private AuthService authService;
-
-	public AuthController(AuthService authService) {
-		this.authService = authService;
-	}
+	private final AuthService authService;
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {

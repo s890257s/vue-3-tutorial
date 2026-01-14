@@ -5,7 +5,6 @@ import org.mapstruct.Mapping;
 
 import com.eeit.vue3.backend.model.dto.ProductResponse;
 import com.eeit.vue3.backend.model.entity.Product;
-import com.eeit.vue3.backend.utils.CommonUtil;
 
 @Mapper(componentModel = "spring")
 /**

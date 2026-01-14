@@ -17,15 +17,15 @@ public class PageQuery {
 	 * sort: 排序欄位
 	 */
 	public PageQuery(Integer page, Integer size, String direction, String sort) {
-		this.page = page;
-		this.size = size;
-		this.direction = direction;
-		this.sort = sort;
+		this.page = (page == null || page < 1) ? 0 : page - 1; // 轉為 0-indexed
+		this.size = (size == null || size < 1) ? 10 : size;
+		this.direction = (direction == null) ? "ASC" : direction;
+		this.sort = (sort == null) ? "productId" : sort;
 
-		this.directionEnum = switch (direction.trim().toLowerCase()) {
+		this.directionEnum = switch (this.direction.trim().toLowerCase()) {
 			case "asc" -> Sort.Direction.ASC;
 			case "desc" -> Sort.Direction.DESC;
-			default -> throw new IllegalArgumentException("輸入了不合法的方向");
+			default -> Sort.Direction.ASC;
 		};
 	}
 

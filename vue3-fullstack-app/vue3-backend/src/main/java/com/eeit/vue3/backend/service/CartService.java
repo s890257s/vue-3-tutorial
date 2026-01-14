@@ -19,8 +19,6 @@ import com.eeit.vue3.backend.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
-@RequiredArgsConstructor
 /**
  * 購物車服務層 (Service)
  * <p>
@@ -29,6 +27,8 @@ import lombok.RequiredArgsConstructor;
  * 2. 新增/更新/刪除購物車項目
  * 3. 清空購物車
  */
+@Service
+@RequiredArgsConstructor
 public class CartService {
 
 	private final CartItemRepository cartItemRepository;

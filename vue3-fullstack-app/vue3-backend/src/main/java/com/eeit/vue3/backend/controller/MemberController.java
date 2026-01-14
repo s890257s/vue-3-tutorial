@@ -1,6 +1,5 @@
 package com.eeit.vue3.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,18 +21,17 @@ import com.eeit.vue3.backend.model.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
-@RequestMapping("/api/members")
-@RequiredArgsConstructor
 /**
  * 會員控制器 (Controller)
  * <p>
- * 提供會員 CRUD 的 API 接口。
+ * 提供會員 CRUD 的 API。
  */
+@RestController
+@RequestMapping("/api/members")
+@RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
-
     private final MemberMapper memberMapper;
 
     /**

@@ -15,10 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import lombok.RequiredArgsConstructor;
 
-@Configuration
-@EnableWebSecurity
-@RequiredArgsConstructor
-@Slf4j
 /**
  * Spring Security 安全配置類別
  * <p>
@@ -29,6 +25,10 @@ import lombok.RequiredArgsConstructor;
  * 4. HTTP 請求權限控制
  * 5. 添加 JWT 認證過濾器
  */
+@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
